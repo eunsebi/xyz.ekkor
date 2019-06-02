@@ -1,11 +1,14 @@
 package xyz.ekkor
 
 import grails.gorm.transactions.Transactional
+import groovy.util.logging.Slf4j
 
 @Transactional
+@Slf4j
 class ArticleDataService {
 
     ActivityService activityService
+    ArticleService articleService
     def grailsApplication
 
     //TODO 2019. 05. 22 댓글 추가
@@ -65,6 +68,8 @@ class ArticleDataService {
 
     //TODO 2019. 05. 24 게시물 저장
     def save(Article article, Avatar author, Category category) {
+        log.info("article save dataService 시작")
+        println "article save dataService 시작"
         User user = User.findByAvatar(author)
 
         article.category = category
@@ -76,13 +81,13 @@ class ArticleDataService {
         article.content.type = ContentType.ARTICLE
         article.content.author = author
 
-        println "11111111111111111"
         article.content.save()
 
-        println "2222222222222222222222"
-        article.save()
+        log.info("article save start")
+        //articleService.save(article)
+        //article.save()
 
-        article.attach()
+        //article.attach()
 
         if(article.anonymity) {
             new Anonymous(
@@ -94,6 +99,7 @@ class ArticleDataService {
         } else {
             activityService.createByArticle(ActivityType.POSTED, article, author)
         }
+        log.info("end")
 
     }
 
@@ -106,5 +112,30 @@ class ArticleDataService {
         int startIndex = user.id % 10
 
         return "A${md5.substring(startIndex, startIndex+7)}"
+    }
+
+    //TODO 2019. 06. 02 게시판 공지사항 List
+    def getNotices(Category category) {
+
+        def notices
+
+        Category parentCategory = category.parent ?: null
+
+        def articleNotices = ArticleNotice.findAllByCategory(category)
+
+        if(parentCategory) {
+            articleNotices += ArticleNotice.findAllByCategory(parentCategory)
+        }
+
+        if(articleNotices) {
+            notices = Article.withCriteria() {
+                eq('enabled', true)
+                'in'('id', articleNotices*.articleId)
+                order('id', 'desc')
+            }.findAll()
+        }
+
+        notices
+
     }
 }

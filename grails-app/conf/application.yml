@@ -116,7 +116,7 @@ dataSource:
 environments:
     development:
         dataSource:
-            dbCreate: update
+            dbCreate: create-drop
             #url: jdbc:oracle:thin:@//oracleinstance.cgthqszcfuqa.ap-northeast-2.rds.amazonaws.com:1521:eunsebi
             url: jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
             #url: jdbc:mysql://ekkor.cgthqszcfuqa.ap-northeast-2.rds.amazonaws.com/devDb

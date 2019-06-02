@@ -3,8 +3,12 @@ package xyz.ekkor
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.validation.ValidationException
+import groovy.util.logging.Slf4j
+import org.hibernate.type.StandardBasicTypes
+
 import static org.springframework.http.HttpStatus.*
 
+@Slf4j
 class ArticleController {
 
     ArticleService articleService
@@ -18,39 +22,124 @@ class ArticleController {
                              addNote: "POST", assent: ["PUT", "POST"], dissent: ["PUT", "POST"]]
 
     //def index(Integer max) {
-    def index(Integer max) {
-        println "Loding in Article index List~~~~~~~~~~~~~~~~~~~~~~~"
+    def index(String code, Integer max) {
+        println "Loading Arcicle List database..."
+        log.info("log ----- Loading Arcicle List database...")
+
         params.max = Math.min(max ?: 10, 100)
-        respond articleService.list(params), model:[articleCount: articleService.count()]
+        params.sort = params.sort ?: 'id'
+        params.order = params.order ?: 'desc'
+        params.query = params.query?.trim()
+
+        println "code : " + code
+
+        def category = Category.get(code)
+
+        println "category : " + category
+
+        if(category == null) {
+            notFound()
+            return
+        }
+
+        /*if (!SpringSecurityUtils.ifAllGranted(category.categoryLevel)) {
+            notAcceptable()
+            return
+        }*/
+
+        def notices = articleDataService.getNotices(category)
+
+        def categories = category.children ?: [category]
+
+        if(category.code == 'community')
+            categories = categories.findAll { it.code != 'promote' }
+
+        def articlesQuery = Article.where {
+            category in categories
+            if (SpringSecurityUtils.ifNotGranted("ROLE_ADMIN"))
+                enabled == true
+            if (params.query && params.query != '')
+                title =~ "%${params.query}%" || content.text =~ "%${params.query}%"
+
+            /*if(recruitFilter) {
+                if(recruits)
+                    id in recruits*.article*.id
+                else
+                    id in [Long.MAX_VALUE]
+            }*/
+        }
+
+        println "params : " + params
+
+        def articles = articlesQuery.list(params)
+        //respond articles, model:[articleCount: articleService.count(), category: category]
+        respond articles, model:[articlesCount: articlesQuery.count(), category: category, notices: notices]
     }
 
-    /*def index(String code, Integer max) {
-        println "ggggggggggggggggggggggg"
+    /*def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         respond articleService.list(params), model:[articleCount: articleService.count()]
     }*/
 
     def show(Long id) {
-
-        println "11111111111111111111111111111111111111111111111"
+        log.info("article show start")
         //respond articleService.get(id)
+        println "article show Loding......"
+        println "Category Code : " + id
 
         def contentVotes = [], scrapped
 
         Article article = Article.get(id)
 
+        if (article == null || (!article.enabled && SpringSecurityUtils.ifNotGranted("ROLE_ADMIN"))) {
+            notFound()
+            return
+        }
+
         article.updateViewCount(1)
+
+        if (springSecurityService.loggedIn) {
+            Avatar avatar = Avatar.load(springSecurityService.principal.avatarId)
+            contentVotes = ContentVote.findAllByArticleAndVoter(article, avatar)
+            //scrapped = Scrap.findByArticleAndAvatar(article, avatar)
+        }
+
+        def category = Category.get(article.categoryId)
+
+        // 권한 확인
+        /*if (!SpringSecurityUtils.ifAllGranted(category.categoryLevel)) {
+            notAcceptable()
+            return
+        }*/
 
         def notes = Content.findAllByArticleAndTypeAndEnabled(article, ContentType.NOTE, true)
 
+        def contentBanners = Banner.where {
+            type == BannerType.CONTENT && visible == true
+        }.list()
+
+        def contentBanner = contentBanners ? randomService.draw(contentBanners) : null
+
+        /*def changeLogs = ChangeLog.createCriteria().list {
+            eq('article', article)
+            projections {
+                sqlGroupProjection 'article_id as articleId, max(date_created) as dateCreated, content_id as contentId', 'content_id',
+                        ['articleId', 'dateCreated', 'contentId'],
+                        [StandardBasicTypes.LONG, StandardBasicTypes.TIMESTAMP, StandardBasicTypes.LONG]
+            }
+        }*/
+
         //respond article, model: [contentVotes: contentVotes, notes: notes, scrapped: scrapped, contentBanner: contentBanner, changeLogs: changeLogs]
-        respond article, model: [contentVotes: contentVotes, notes: notes, scrapped: scrapped]
+        //respond article, model: [contentVotes: contentVotes, notes: notes, scrapped: scrapped, contentBanner: contentBanner]
+        respond article, model: [contentVotes: contentVotes, notes: notes, contentBanner: contentBanner]
     }
 
     def create(String code) {
         //respond new Article(params)
 
-        code = "4"
+        Article article = new Article(params)
+
+        println "params : " + params
 
         def category =Category.get(code)
 
@@ -107,12 +196,28 @@ class ArticleController {
         }
     }
 
-    def save(Article article) {
+    //TODO 2019. 06. 02 게시물 저장
+    /**
+     *
+     * @param article
+     * @return
+     */
+    //def save(Article article) {
+    def save(String code) {
+        log.info("article save start")
 
-        println "save Category Code : " + article.category
+        println "Article Save Loding......."
 
-        //Article article = new Article(params)
-        Category category = Category.get(params.categoryCode)
+        Article article = new Article(params)
+
+        println "Artice Save Params : " + params
+        println "Article save article : " + article
+        println "category code : " + params.code
+
+        //Category category = Category.get(article.category)
+        Category category = Category.get(params.code)
+
+        println "category : " + category
 
         User user = springSecurityService.loadCurrentUser()
 
@@ -132,6 +237,8 @@ class ArticleController {
 
             Avatar author = Avatar.load(springSecurityService.principal.avatarId)
 
+            println "avatar : " + author
+
             if(SpringSecurityUtils.ifAllGranted("ROLE_ADMIN")) {
                 article.choice = params.choice?:false
                 article.enabled = !params.disabled
@@ -140,9 +247,15 @@ class ArticleController {
 
             article.createIp = userDataService.getRealIp(request)
 
+            // 서비스 항목
+            article.category = category
+            article.author = author
+            //
+
             articleDataService.save(article, author, category)
 
-            //
+            //articleService.save(article, author, category)
+            //articleService.save(article)
 
             //articleService.save(article)
         } catch (ValidationException e) {

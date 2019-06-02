@@ -30,53 +30,86 @@
  </div>--}%
  </g:if>
 
-category
-<div class="form-group ${hasErrors(bean: article, field: 'choice', 'has-error')} has-feedback">
-    <div class="checkbox">
-        <label>
-            <g:checkBox name="choice" value="${article?.choice}"  />
-            <g:message code="article.choice.label" default="Editor`s Choice" />
-        </label>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <label>
-            <g:checkBox name="disabled" value="${!article?.enabled}"  />
-            <g:message code="article.disabled.label" default="게시물 비공개 (관리자만 접근가능)" />
-        </label>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <label>
-            <g:checkBox name="ignore" value="${article?.ignoreBest}"  />
-            <g:message code="article.ignore.label" default="Weekly Best 제외" />
-        </label>
-    </div>
-</div>
+<g:if test="${!article.id || !article.category?.anonymity}">
+    <sec:ifAllGranted roles="ROLE_ADMIN">
 
-<div class="form-group ${hasErrors(bean: article, field: 'choice', 'has-error')} has-feedback">
-    <div class="checkbox">
-        <label>
-            <g:checkBox name="notice" value="${notices?.size() > 0}"  />
-            <g:message code="article.notice.label" default="카테고리 공지" />
-        </label>
-    </div>
-    <div class="alert alert-info" id="noticeCategoryList" style="display: ${notices?.size() > 0 ? "block" : "none"}">
-        <g:each in="${categories}" var="category">
-            <label>
-                <input type="checkbox" name="notices" value="${category.id}" <g:if test="${notices*.categoryId.contains(category.code)}">checked="checked"</g:if>> ${message(code: category.labelCode, default: category.defaultLabel)}
-            </label>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-        </g:each>
-    </div>
-</div>
-<div class="form-group ${hasErrors(bean: article, field: 'category', 'has-error')} has-feedback">
-    <div> writableCategories = ${writableCategories}
-        <select id="category" name="category.id" class="form-control">
-            <option value="">게시판을 선택해 주세요.</option>
-            <g:each in="${writableCategories}" var="category">
-                <option value="${category.id}" <g:if test="${category.code == article?.category?.code}">
-                    selected="selected"</g:if>>${message(code: category.labelCode, default: category.defaultLabel)}</option>
-            </g:each>
-        </select>
-    </div>
-</div>
+        <div class="form-group ${hasErrors(bean: article, field: 'choice', 'has-error')} has-feedback">
+            <div class="checkbox">
+                <label>
+                    <g:checkBox name="choice" value="${article?.choice}"/>
+                    <g:message code="article.choice.label" default="Editor`s Choice"/>
+                </label>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <label>
+                    <g:checkBox name="disabled" value="${!article?.enabled}"/>
+                    <g:message code="article.disabled.label" default="게시물 비공개 (관리자만 접근가능)"/>
+                </label>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <label>
+                    <g:checkBox name="ignore" value="${article?.ignoreBest}"/>
+                    <g:message code="article.ignore.label" default="Weekly Best 제외"/>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group ${hasErrors(bean: article, field: 'choice', 'has-error')} has-feedback">
+            <div class="checkbox">
+                <label>
+                    <g:checkBox name="notice" value="${notices?.size() > 0}"/>
+                    <g:message code="article.notice.label" default="카테고리 공지"/>
+                </label>
+            </div>
+
+            <div class="alert alert-info" id="noticeCategoryList"
+                 style="display: ${notices?.size() > 0 ? "block" : "none"}">
+                <g:each in="${categories}" var="category">
+                    <label>
+                        <input type="checkbox" name="notices" value="${category.code}"
+                               <g:if test="${notices*.categoryId.contains(category.code)}">checked="checked"</g:if>> ${message(code: category.labelCode, default: category.defaultLabel)}
+                    </label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                </g:each>
+            </div>
+        </div>
+
+        <div class="form-group ${hasErrors(bean: article, field: 'category', 'has-error')} has-feedback">
+            <div>
+                <select id="category" name="categoryCode" class="form-control">
+                    <option value="">게시판을 선택해 주세요.</option>
+                    <g:each in="${writableCategories}" var="category">
+                        <option value="${category.id}"
+                                <g:if test="${category.code == article?.category?.code}">selected="selected"</g:if>>${message(code: category.labelCode, default: category.defaultLabel)}</option>
+                    </g:each>
+                </select>
+            </div>
+        </div>
+    </sec:ifAllGranted>
+
+    <sec:ifNotGranted roles="ROLE_ADMIN">
+        <g:if test="${writableCategories.size() > 1}">
+            <div class="form-group ${hasErrors(bean: article, field: 'category', 'has-error')} has-feedback">
+                <div>
+                    <select id="category" name="categoryCode" class="form-control">
+                        <option value="">게시판을 선택해 주세요.</option>
+                        <g:each in="${writableCategories}" var="category">
+                            <option value="${category.code}"
+                                    <g:if test="${category.code == article?.category?.code}">selected="selected"</g:if>
+                                    data-external="${category.writeByExternalLink}"
+                                    data-anonymity="${category.anonymity}">
+                                ${message(code: category.labelCode, default: category.defaultLabel)}
+                            </option>
+                        </g:each>
+                    </select>
+                </div>
+            </div>
+        </g:if>
+        <g:else>
+            <g:hiddenField name="categoryCode" value="${writableCategories?.getAt(0).code}"/>
+        </g:else>
+    </sec:ifNotGranted>
+</g:if>
+
+category
 
 <div class="form-group ${hasErrors(bean: article, field: 'title', 'has-error')} has-feedback">
     <div>
@@ -145,7 +178,7 @@ content
         }
     });*/
 
-     /*function postForm() {
+     function postForm() {
          $('textarea[name="content.text"]').val($('#summernote').code());
      }
 
@@ -156,7 +189,7 @@ content
          $('#noticeCategoryList').hide();
          $('input[name="notices"]').prop('checked', false);
        }
-     });*/
+     });
 </asset:script>
 %{--<fieldset class="form">
     <f:all bean="article"/>

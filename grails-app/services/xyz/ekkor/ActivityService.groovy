@@ -27,18 +27,19 @@ class ActivityService {
      * @return
      */
     def create(ActivityType activityType, Article article, Content content, Avatar avatar) {
-
+        println "512333333212313333"
         Activity activity = new Activity(article: article,
                 avatar: avatar,
                 content: content,
                 type: activityType)
-                .save(flush: true, failOnError: true)
+                //.save(flush: true, failOnError: true)
+        .save()
 
         activity
     }
 
     /**
-     * 신규 게시물 저장 연동
+     * 신규 게시물 등록 정보 연동
      * @param activityType
      * @param article
      * @param avatar
@@ -47,7 +48,6 @@ class ActivityService {
     def createByArticle(ActivityType activityType, Article article, Avatar avatar) {
         Activity activity = create(activityType, article,
                 article.content, avatar)
-
         activity
     }
 

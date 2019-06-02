@@ -9,7 +9,12 @@ class UrlMappings {
             }
         }
 
+
         "/articles/$code/$action?(.$format)?"(controller: "article")
+
+        "/article/$id(.$format)?"(controller: "article", action: "show")
+        "/article/$action/$id(.$format)?"(controller: "article")
+        "/article/$id/$action/$contentId(.$format)?"(controller: "article")
 
         // test용
         /*"/article/index"(controller: "article", action: "index")

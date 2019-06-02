@@ -93,7 +93,7 @@ class ArticleTagLib {
 
         def category = attrs.category
 
-        out << raw("""<a href="${request.contextPath}/articles/${category.code}" class="list-group-item-text item-tag label label-info">
+        out << raw("""<a href="${request.contextPath}/articles/${category.id}" class="list-group-item-text item-tag label label-info">
 <i class="${category.iconCssNames}"></i> ${g:message([code: category.labelCode, default: category.defaultLabel])}</a>""")
     }
 

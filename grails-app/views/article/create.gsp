@@ -46,12 +46,15 @@ form
                 </g:else>
             </div>--}%
 
-            <g:form resource="${this.article}" method="POST">
+            %{--<g:form resource="${this.article}" method="POST">--}%
+            <g:form id="article-form" url="[resource:article, uri: '/articles/'+params.code+'/save']" useToken="true" class="article-form"
+                    role="form" onsubmit="return postForm()" enctype="multipart/form-data">
                 <fieldset class="form">
                     <g:render template="form"/>
                     %{--<f:all bean="article"/>--}%
                 </fieldset>
                 <fieldset class="buttons">
+                    <g:link uri="/articles/${params.code}" class="btn btn-default btn-wide" onclick="return confirm('정말로 취소하시겠습니까?')"><g:message code="default.button.cancel.label" default="Cancel"/></g:link>
                     <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
                 </fieldset>
             </g:form>

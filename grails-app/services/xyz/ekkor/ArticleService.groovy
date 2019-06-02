@@ -15,6 +15,8 @@ interface ArticleService {
 
     Article save(Article article)
 
+    //Article save(Article article, Avatar author, Category category)
+
     //addVote(Article article, Content content, Avatar avatar, Integer point)
 
 }

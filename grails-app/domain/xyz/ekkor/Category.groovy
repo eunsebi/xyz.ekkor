@@ -1,6 +1,6 @@
 package xyz.ekkor
 
-class Category {
+class Category implements Serializable {
 
     String code
     String labelCode
@@ -25,7 +25,7 @@ class Category {
 
     Boolean writeByExternalLink = false
     String externalLink
-    Integer cate_role =5
+    String categoryLevel = "ROLE_USER"
 
     static belongsTo = [parent: Category]
 
@@ -60,4 +60,9 @@ class Category {
     static def getTopCategories() {
         Category.findAllByLevelAndEnabled(1, true)
     }
+
+    protected void getLevelFromParent() {
+        level = parent ? parent.level+1 : 1
+    }
+
 }

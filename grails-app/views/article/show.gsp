@@ -38,7 +38,7 @@
                 <div id="article" class="content" role="main">
                     <!-- Category -->
                     <div class="nav" role="navigation">
-                        <g:link class="create btn btn-success btn-wide pull-right" uri="/articles/${article.category.code}/create"><i class="fa fa-pencil"></i> <g:message code="default.new.label" args="[entityName]" /></g:link>
+                        <g:link class="create btn btn-success btn-wide pull-right" uri="/articles/${article.category.id}/create"><i class="fa fa-pencil"></i> <g:message code="default.new.label" args="[entityName]" /></g:link>
 
                         <h4><g:message code="${article.category.labelCode}" default="${article.category.defaultLabel}" /></h4>
                     </div>
