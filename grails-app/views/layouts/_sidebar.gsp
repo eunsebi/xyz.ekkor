@@ -24,7 +24,7 @@
     </form>
 
     <div class="nav-user nav-sidebar">
-        %{--<sec:ifLoggedIn>
+        <sec:ifLoggedIn>
             <g:if test="${isSub}">
                 <g:avatar size="medium" pictureOnly="true" />
             </g:if>
@@ -88,7 +88,7 @@
                 <li <g:if test="${isSub}">data-toggle="tooltip" data-container="body" title="로그인"</g:if>><g:link uri="/login/auth?redirectUrl=${encodedURL()}" class="link"><i class="fa fa-sign-in"></i> <span class="nav-sidebar-label">로그인</span></g:link></li>
                 <li <g:if test="${isSub}">data-toggle="tooltip" data-container="body" title="회원가입"</g:if>><g:link uri="/user/register" class="link"><i class="fa fa-user"></i> <span class="nav-sidebar-label">회원가입</span></g:link></li>
             </ul>
-        </sec:ifNotLoggedIn>--}%
+        </sec:ifNotLoggedIn>
     </div>
     %{--<sec:ifAllGranted roles='ROLE_ADMIN'>
             <g:link uri="_admin" class="link"><i class="fa fa-sign-in"></i> <span class="nav-sidebar-label">관리자페이지</span></g:link>

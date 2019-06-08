@@ -1,9 +1,18 @@
+import javax.persistence.*
 
+grails.gorm.default.mapping = {
+	'*'(accessType: AccessType.PROPERTY)
+}
 
 // Added by the Spring Security Core plugin:
 grails.plugin.springsecurity.userLookup.userDomainClassName = 'xyz.ekkor.User'
 grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'xyz.ekkor.UserRole'
 grails.plugin.springsecurity.authority.className = 'xyz.ekkor.Role'
+
+//2019. 02. 12 추가
+grails.plugin.springsecurity.password.algorithm = 'bcrypt'
+grails.plugin.springsecurity.logout.postOnly = false
+
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 		[pattern: '/',               access: ['permitAll']],
 		[pattern: '/error',          access: ['permitAll']],
@@ -18,6 +27,7 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 		[pattern: '/admin/dbconsole/**', access: ['permitAll']],
 
 		// 추가
+		[pattern: '/main/index',          access: ['permitAll']],
 		[pattern: '/article/**', 	 access: ['ROLE_ADMIN', 'ROLE_USER']],
 		[pattern: '/articles/**', 	 access: ['ROLE_ADMIN', 'ROLE_USER']],
 		[pattern: '/money/**', 	 access: ['ROLE_ADMIN', 'ROLE_USER']],

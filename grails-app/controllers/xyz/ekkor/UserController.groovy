@@ -6,8 +6,19 @@ import static org.springframework.http.HttpStatus.*
 class UserController {
 
     UserService userService
+    def springSecurityService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+
+    def beforeInterceptor = [action:this.&notLoggedIn,
+                             except: ['edit', 'update', 'index', 'rejectDM', 'withdrawConfirm', 'withdraw', 'passwordChange', 'updatePasswordChange']]
+
+    private notLoggedIn() {
+        if(springSecurityService.loggedIn) {
+            redirect uri: '/'
+            return false
+        }
+    }
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)

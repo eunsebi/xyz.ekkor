@@ -6,7 +6,7 @@ class ArticleTagLib {
 
     SpringSecurityService springSecurityService
 
-    static defaultEncodeAs = [taglib:'html']
+    /*static defaultEncodeAs = [taglib:'html']
     //static encodeAsForTags = [tagName: [taglib:'html'], otherTagName: [taglib:'none']]
 
     static allowedMethods = [save   : "POST", update: ["PUT", "POST"], delete: ["DELETE", "POST"], scrap: "POST",
@@ -36,7 +36,7 @@ class ArticleTagLib {
                 o << '/>'
                 return o
             }
-    ]
+    ]*/
 
     /**
      * Line to br
@@ -54,7 +54,7 @@ class ArticleTagLib {
      */
     def filterHtml = { attrs, body ->
         def text = attrs.text ?: body()
-        out << text
+        out << raw(text)
     }
 
     /**
@@ -64,7 +64,7 @@ class ArticleTagLib {
         def text = attrs.text ?: body()
         def regex = /<\/?(?i:script|embed|object|frameset|frame|iframe|meta|link|style|a|img|br|p|span|div|hr)(.|\n)*?>/
         text.replaceAll(regex, '')
-        out << text
+        out << raw(text)
     }
 
     /**
@@ -182,12 +182,12 @@ class ArticleTagLib {
      * Current user is Author
      * @attr author Author REQUIRED
      */
-    /*def isAuthorOrAdmin = { attrs, body ->
+    def isAuthorOrAdmin = { attrs, body ->
         if((springSecurityService.isLoggedIn() && attrs.author && springSecurityService.principal.avatarId == attrs.author.id)
                 || SpringSecurityUtils.ifAllGranted("ROLE_ADMIN")) {
             out << body()
         }
-    }*/
+    }
 
     /**
      * view Author
@@ -237,51 +237,51 @@ class ArticleTagLib {
                 break
         }
 
-        out << "<div class='avatar avatar-${size} clearfix ${cssClass}'>"
+        out << raw("<div class='avatar avatar-${size} clearfix ${cssClass}'>")
 
         if(avatar.id)
-            out << "<a href='${request.contextPath}/user/info/${avatar.id}' class='avatar-photo'><img src='${url}'/></a> "
+            out << raw("<a href='${request.contextPath}/user/info/${avatar.id}' class='avatar-photo'><img src='${url}'/></a> ")
         else
-            out << "<span class='avatar-photo'><img src='${url}'/></span> "
+            out << raw("<span class='avatar-photo'><img src='${url}'/></span> ")
 
         if (attrs.pictureOnly != 'true') {
-            out << """<div class="avatar-info">"""
+            out << raw("""<div class="avatar-info">""")
 
             if(avatar.id)
-                out << """<a class="nickname" href="${request.contextPath}/user/info/${avatar.id}"  title="${avatar.nickname}">${avatar.nickname}</a> """
+                out << raw("""<a class="nickname" href="${request.contextPath}/user/info/${avatar.id}"  title="${avatar.nickname}">${avatar.nickname}</a> """)
             else
-                out << """<span class="nickname" title="${avatar.nickname}">${avatar.nickname}</span> """
+                out << raw("""<span class="nickname" title="${avatar.nickname}">${avatar.nickname}</span> """)
 
             if (attrs.dateCreated != null) {
                 if(avatar.id)
-                    out << """<div class="activity"><span class="fa fa-flash"></span> ${shortenNumber(avatar.activityPoint)}</div>"""
+                    out << raw("""<div class="activity"><span class="fa fa-flash"></span> ${shortenNumber(avatar.activityPoint)}</div>""")
                 else
-                    out << """<div class="activity"><span class="fa fa-lock"></span> </div>"""
+                    out << raw("""<div class="activity"><span class="fa fa-lock"></span> </div>""")
 
 
                 if(attrs.changeLog == null) {
 
-                    out << """<div class="date-created"><span class="timeago" title="${attrs.dateCreated}">${attrs.dateCreated.format('yyyy-MM-dd HH:mm:ss')}</span> """
+                    out << raw("""<div class="date-created"><span class="timeago" title="${attrs.dateCreated}">${attrs.dateCreated.format('yyyy-MM-dd HH:mm:ss')}</span> """)
 
 
                 } else {
 
-                    out << """<div class="date-created"><span class="timeago" title="${attrs.dateCreated}">${attrs.dateCreated.format('yyyy-MM-dd HH:mm:ss')}</span> 작성 """
+                    out << raw("""<div class="date-created"><span class="timeago" title="${attrs.dateCreated}">${attrs.dateCreated.format('yyyy-MM-dd HH:mm:ss')}</span> 작성 """)
 
-                    out << """  <span class="date-saperate">∙</span> <a href="${request.contextPath}/changes/${attrs.changeLog[2]}"><span class="timeago" title="${attrs.changeLog[1]}">${attrs.changeLog[1].format('yyyy-MM-dd HH:mm:ss')}</span> 수정됨 </a>"""
+                    out << raw("""  <span class="date-saperate">∙</span> <a href="${request.contextPath}/changes/${attrs.changeLog[2]}"><span class="timeago" title="${attrs.changeLog[1]}">${attrs.changeLog[1].format('yyyy-MM-dd HH:mm:ss')}</span> 수정됨 </a>""")
 
                 }
 
-                out << """</div> """
+                out << raw("""</div> """)
             } else {
                 if(avatar.id)
-                    out << """<div class="activity ${size == 'medium' ? 'block' : ''}"><span class="fa fa-flash"></span> ${shortenNumber(avatar.activityPoint)}</div>"""
+                    out << raw("""<div class="activity ${size == 'medium' ? 'block' : ''}"><span class="fa fa-flash"></span> ${shortenNumber(avatar.activityPoint)}</div>""")
             }
 
-            out << "</div>"
+            out << raw("</div>")
         }
 
-        out << "</div>"
+        out << raw("</div>")
     }
 
     private def shortenNumber(def orgNumber) {

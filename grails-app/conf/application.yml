@@ -10,6 +10,9 @@ grails:
             events: false
     encrypt:
         key: "asdf"
+    spring:
+        transactionManagement:
+            proxies: false
 
 info:
     app:
@@ -72,6 +75,9 @@ grails:
             maxsize: 1000
     controllers:
         defaultScope: singleton
+        upload:
+            maxFileSize: 5000000
+            maxRequestSize: 5000000
     converters:
         encoding: UTF-8
     views:
@@ -85,6 +91,12 @@ grails:
                 scriptlets: html
                 taglib: none
                 staticparts: none
+    plugin:
+        awssdk:
+            region: ap-northeast-2
+            accesskey: AKIAJCVUXSCSSBNQKJDA
+            secretkey: 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
+
 endpoints:
     jmx:
         unique-names: true

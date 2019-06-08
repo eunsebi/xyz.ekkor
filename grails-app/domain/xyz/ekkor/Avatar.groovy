@@ -42,8 +42,18 @@ class Avatar {
         }
     }
 
+    def updateActivityPoint(def i) {
+        if(id != null && i != 0) {
+            executeUpdate("update Avatar set activityPoint = activityPoint+:i where id = :id",[i:i, id: id])
+        }
+    }
+
     static boolean disAllowNicknameFilter(nickname) {
         return ['OKJSP관리자','옥히','옥희','OKJSP','운영진','운영자'
                 ,'OKJSP운영진','OKJSP운영자','부운영자','옥히관리자','옥희관리자'].contains(nickname)
+    }
+
+    String toString() {
+        nickname
     }
 }

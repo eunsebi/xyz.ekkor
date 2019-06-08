@@ -9,17 +9,6 @@
   Time: 오후 5:15
 --}%
 
-<%@ page contentType="text/html;charset=utf-8" %>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title></title>
-</head>
-
-<body>
- form body
-
-
  <g:if test="${category?.anonymity}">
  %{--<div class="form-group ${hasErrors(bean: article, field: 'title', 'error')} has-feedback">
      <div class="alert alert-info">
@@ -109,8 +98,6 @@
     </sec:ifNotGranted>
 </g:if>
 
-category
-
 <div class="form-group ${hasErrors(bean: article, field: 'title', 'has-error')} has-feedback">
     <div>
         <g:textField name="title" required="" value="${article?.title}" placeholder="제목을 입력해 주세요." class="form-control"/>
@@ -123,22 +110,21 @@ category
     </div>
 </div>
 
-content
 <div class="form-group ${hasErrors(bean: article.content, field: 'text', 'has-error')} has-feedback">
-    <g:if test="${article?.content?.textType == ContentTextType.MD}">
+    <g:if test="${article?.content?.textType == ContentTextType.MD}">MD
         <g:textArea name="content.text" id="summernote" value="${markdown.renderHtml([text: article?.content?.text])}" rows="20" class="form-control input-block-level" />
     </g:if>
-    <g:elseif test="${article?.content?.textType == ContentTextType.HTML}">
+    <g:elseif test="${article?.content?.textType == ContentTextType.HTML}">HTML
         <g:textArea name="content.text" id="summernote" value="${filterHtml([text: article?.content?.text])}" rows="20" class="form-control input-block-level" />
     </g:elseif>
-    <g:else>
+    <g:else>text
         <g:textArea name="content.text" id="summernote" value="${lineToBr([text: article?.content?.text])}" rows="20" class="form-control input-block-level" />
     </g:else>
 </div>
 
 <g:hiddenField name="content.textType" value="HTML"/>
 <asset:script type="text/javascript">
-    /*$(document).ready(function() {
+    $(document).ready(function() {
         $('#summernote').summernote({
             height: 300,
             minHeight: null,
@@ -176,7 +162,7 @@ content
                 }
             });
         }
-    });*/
+    });
 
      function postForm() {
          $('textarea[name="content.text"]').val($('#summernote').code());
@@ -194,6 +180,3 @@ content
 %{--<fieldset class="form">
     <f:all bean="article"/>
 </fieldset>--}%
-
-</body>
-</html>

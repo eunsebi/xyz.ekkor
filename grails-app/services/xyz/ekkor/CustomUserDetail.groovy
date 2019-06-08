@@ -24,7 +24,7 @@ class CustomUserDetail extends GrailsUser{
      * @param id the id of the domain class instance used to populate this
      */
     CustomUserDetail(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked,
-                     Collection<GrantedAuthority> authorities, Object id, long avatarId, long personId) {
+                     Collection<GrantedAuthority> authorities, long id, long avatarId, long personId) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities, id)
 
         this.avatarId = avatarId

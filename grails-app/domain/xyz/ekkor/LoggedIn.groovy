@@ -1,8 +1,5 @@
 package xyz.ekkor
 
-import groovy.transform.ToString
-
-@ToString
 class LoggedIn {
 
     User user
@@ -11,5 +8,14 @@ class LoggedIn {
 
     static constraints = {
         remoteAddr nullable: true
+    }
+
+    static mapping = {
+        sort dateCreated: 'desc'
+    }
+
+    @Override
+    String toString() {
+        "${remoteAddr} | ${dateCreated}"
     }
 }

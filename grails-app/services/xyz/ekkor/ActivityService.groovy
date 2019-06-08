@@ -27,14 +27,12 @@ class ActivityService {
      * @return
      */
     def create(ActivityType activityType, Article article, Content content, Avatar avatar) {
-        println "512333333212313333"
         Activity activity = new Activity(article: article,
                 avatar: avatar,
                 content: content,
                 type: activityType)
                 //.save(flush: true, failOnError: true)
         .save()
-
         activity
     }
 

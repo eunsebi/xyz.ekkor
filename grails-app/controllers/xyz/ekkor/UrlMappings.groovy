@@ -9,6 +9,7 @@ class UrlMappings {
             }
         }
 
+        "/" (controller: "main", action: 'index')
 
         "/articles/$code/$action?(.$format)?"(controller: "article")
 
@@ -53,7 +54,7 @@ class UrlMappings {
        //"/_admin/dm/updateReject"(controller: "dm", action: 'updateReject')
        "/_admin"(controller: "statistic")*/
 
-        "/"(view:"/index")
+        "/grails"(view:"/index")
         "500"(view:'/error')
         "404"(view:'/notFound')
 

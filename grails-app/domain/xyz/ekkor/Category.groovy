@@ -49,13 +49,25 @@ class Category implements Serializable {
         adminOnly nullable: true
     }
 
-    /*static mapping = {
+    static mapping = {
         id generator: "assigned", name: 'code', type: 'string'
         parent lazy: false
         children sort: 'sortOrder'
         sort 'sortOrder'
         cache true
-    }*/
+    }
+
+    def getId() { code }
+
+    def beforeInsert() {
+        getLevelFromParent()
+    }
+
+    def beforeUpdate() {
+        if (isDirty('parent')) {
+            getLevelFromParent()
+        }
+    }
 
     static def getTopCategories() {
         Category.findAllByLevelAndEnabled(1, true)

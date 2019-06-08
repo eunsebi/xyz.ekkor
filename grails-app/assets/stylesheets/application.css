@@ -8,12 +8,60 @@
 * compiled file, but it's generally better to create a new file per style scope.
 *
 *= require bootstrap
-*= require grails
+*= require bootstrap-tagsinput
+*= require bootstrap-datepicker3
+*= require summernote
+*= require prism
 *= require main
 *= require mobile
 *= require_self
 */
 
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+    background-color: #f8f8f8;
+    font-family: Helvetica Neue, Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", Dotdum;
+}
+
+a {
+    color: #2a6496;
+}
+
+pre.prettyprint{padding:9.5px !important; border:1px solid #ccc !important}
+
+pre {
+    word-break: normal;
+    word-wrap: normal;
+    overflow-x: auto;
+    font-size: 11px;
+}
+
+pre code {
+    white-space: inherit;
+}
+
+.form {
+    margin-top: 20px;
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+    color: #ccc !important;
+    font-weight: 100 !important;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: #ccc !important;
+    opacity:  1;
+    font-weight: 100 !important;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #ccc !important;
+    opacity:  1;
+    font-weight: 100 !important;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color: #ccc !important;
+    font-weight: 100 !important;
+}
 
 /*
  * Global add-ons

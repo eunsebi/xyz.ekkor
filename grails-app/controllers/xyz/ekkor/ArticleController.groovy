@@ -21,9 +21,16 @@ class ArticleController {
     static allowedMethods = [save   : "POST", update: ["PUT", "POST"], delete: ["DELETE", "POST"], scrap: "POST",
                              addNote: "POST", assent: ["PUT", "POST"], dissent: ["PUT", "POST"]]
 
-    //def index(Integer max) {
+    //TODO 2019. 06. 03 게시물 리스트
+    /**
+     *
+     * @param code
+     * @param max
+     * @return
+     */
     def index(String code, Integer max) {
-        println "Loading Arcicle List database..."
+    //def index(Integer max) {
+        println "Loading Arcicle List(index) database..."
         log.info("log ----- Loading Arcicle List database...")
 
         params.max = Math.min(max ?: 10, 100)
@@ -42,10 +49,10 @@ class ArticleController {
             return
         }
 
-        /*if (!SpringSecurityUtils.ifAllGranted(category.categoryLevel)) {
+        if (!SpringSecurityUtils.ifAllGranted(category.categoryLevel)) {
             notAcceptable()
             return
-        }*/
+        }
 
         def notices = articleDataService.getNotices(category)
 
@@ -81,11 +88,16 @@ class ArticleController {
         respond articleService.list(params), model:[articleCount: articleService.count()]
     }*/
 
+    // TODO 2019. 06. 03 게시물 보기
+    /**
+     *
+     * @param id
+     * @return
+     */
     def show(Long id) {
         log.info("article show start")
         //respond articleService.get(id)
         println "article show Loding......"
-        println "Category Code : " + id
 
         def contentVotes = [], scrapped
 
@@ -134,10 +146,16 @@ class ArticleController {
         respond article, model: [contentVotes: contentVotes, notes: notes, contentBanner: contentBanner]
     }
 
+    //TODO 2019. 06. 03 게시물 작성 페이지
+    /**
+     *
+     * @param code
+     * @return
+     */
     def create(String code) {
         //respond new Article(params)
 
-        Article article = new Article(params)
+        //Article article = new Article(params)
 
         println "params : " + params
 
@@ -155,28 +173,17 @@ class ArticleController {
             return
         }
 
+        // Category 접근 권한 확인
+        if (!SpringSecurityUtils.ifAllGranted(category.categoryLevel)) {
+            notAcceptable()
+            return
+        }
+
         params.category = category
 
         def writableCategories
         def categories = Category.findAllByEnabled(true)
         def goExternalLink = false
-
-        // 권한 확인 process
-        /*println "user Role: " + user.getAuthorities()
-        println "Category Role : " + category.cate_role*/
-
-        /*String[] role = user.getAuthorities()
-        int user_size = user.getAuthorities().size()
-        String category_role = Integer.toString(category.cate_role)
-
-        for (int num ; num < user_size ; num++) {
-            role[num] = role[num].substring(role[num].length() -1)
-        }
-
-        boolean result = Arrays.asList(role).contains(category_role)
-
-        //println " 권한 : " + result
-        */
 
         // 권한 확인
         if(SpringSecurityUtils.ifAllGranted("ROLE_ADMIN")) {

@@ -83,7 +83,7 @@ img {
     border: none;
 }
 
-.footer {
+/*.footer {
     background: #424649;
     color: #ffffff;
     clear: both;
@@ -95,7 +95,7 @@ img {
 
 .footer a {
     color: #feb672;
-}
+}*/
 
 .spinner {
     background: url(../images/spinner.gif) 50% 50% no-repeat transparent;

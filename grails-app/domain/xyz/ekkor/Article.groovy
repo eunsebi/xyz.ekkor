@@ -2,6 +2,8 @@ package xyz.ekkor
 
 class Article {
 
+    transient articleDataService
+
     String title
     String tagString
 
@@ -39,6 +41,15 @@ class Article {
 
     static hasMany = [tags : Tag, notes: Content, articleNotices: ArticleNotice]
 
+    static transients = ['disabled', 'ignore']
+
+    static mapping = {
+        cache true
+        notes sort: 'id', order: 'asc'
+        sort id: 'desc'
+        best formula: "view_count + vote_count * 500 + note_count * 50"
+    }
+
     static constraints = {
         title blank: false
         author nullable: true, bindable: false
@@ -63,6 +74,54 @@ class Article {
             }
 
             if(spam) return ["default.invalid.word.message"]
+        }
+    }
+
+    def beforeInsert() {
+        if(anonymity) {
+            author = null
+            content.anonymity = true
+            content.author = null
+            content.aNickName = aNickName
+        }
+        updateTag()
+    }
+
+    def beforeUpdate() {
+        if(anonymity) {
+            author = null
+            lastEditor = null
+            content.anonymity = true
+            content.aNickName = aNickName
+        }
+        if(isDirty('tagString')) {
+            updateTag()
+            articleDataService.changeLog(ChangeLogType.TAGS, this, content, this.getPersistentValue('tagString'), tagString)
+        }
+        if(isDirty('title')) {
+            articleDataService.changeLog(ChangeLogType.TITLE, this, content, this.getPersistentValue('title'), title)
+        }
+    }
+
+    def beforeDelete() {
+        /*if(tags) {
+            tags.each { tag ->
+                tag.taggedCount--
+                tag.save()
+            }
+        }*/
+    }
+
+    def getDisplayAuthor() {
+        if(anonymity) {
+            return new Avatar(
+                    nickname: aNickName ?: "익명",
+                    picture: '',
+                    pictureType: AvatarPictureType.ANONYMOUSE,
+                    activityPoint: null
+            )
+        } else {
+            return author
         }
     }
 
