@@ -125,6 +125,39 @@ class Article {
         }
     }
 
+    void updateTag() {
+
+        def removedTags = tags ?: []
+
+        if(tagString) {
+            def tagNames = tagString.split(/[,\s]+/).toList().unique().findAll { !it.isEmpty() }
+
+            tagNames.each { tagName ->
+                tagName = tagName.toLowerCase()
+                def tag = TagSimilarText.findByText(tagName)?.tag ?: Tag.findByName(tagName)
+
+                if(tag == null) {
+                    tag =  new Tag(name: tagName).save()
+                } else {
+                    if(!tags?.contains(tag))
+                        tag.taggedCount++
+                }
+
+                addToTags(tag)
+                removedTags -= tag
+                tag.save()
+            }
+
+            tagString = tagNames.join(',')
+        }
+
+        removedTags.each { tag ->
+            removeFromTags(tag)
+            tag.taggedCount--
+            tag.save()
+        }
+    }
+
     def updateViewCount(def i) {
         if(id != null) {
             executeUpdate("update Article set viewCount = viewCount+:i where id = :id",[i:i, id: id])

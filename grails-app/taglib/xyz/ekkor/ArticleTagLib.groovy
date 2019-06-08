@@ -1,6 +1,7 @@
 package xyz.ekkor
 
 import grails.plugin.springsecurity.SpringSecurityService
+import grails.plugin.springsecurity.SpringSecurityUtils
 
 class ArticleTagLib {
 
@@ -182,9 +183,30 @@ class ArticleTagLib {
      * Current user is Author
      * @attr author Author REQUIRED
      */
+    def isAuthor = { attrs, body ->
+        if(springSecurityService.isLoggedIn() && attrs.author && springSecurityService.principal.avatarId == attrs.author.id) {
+            out << body()
+        }
+    }
+
+    /**
+     * Current user is Author
+     * @attr author Author REQUIRED
+     */
     def isAuthorOrAdmin = { attrs, body ->
-        if((springSecurityService.isLoggedIn() && attrs.author && springSecurityService.principal.avatarId == attrs.author.id)
+        if ((springSecurityService.isLoggedIn() && attrs.author && springSecurityService.principal.avatarId == attrs.author.id)
                 || SpringSecurityUtils.ifAllGranted("ROLE_ADMIN")) {
+
+            out << body()
+        }
+    }
+
+    /**
+     * Current user is Author
+     * @attr author Author REQUIRED
+     */
+    def isNotAuthor = { attrs, body ->
+        if(!attrs.author || !springSecurityService.isLoggedIn() || springSecurityService.principal.avatarId != attrs.author.id) {
             out << body()
         }
     }

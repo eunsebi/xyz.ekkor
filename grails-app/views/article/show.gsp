@@ -23,14 +23,14 @@
 
         <div id="article" class="content" role="main">
             <!-- grails nav -->
-            <a href="#show-article" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
+            %{--<a href="#show-article" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
             <div class="nav" role="navigation">
                 <ul>
                     <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
                     <li><g:link class="list" action="index"><g:message code="default.list.label" args="[entityName]" /></g:link></li>
                     <li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
                 </ul>
-            </div> <!-- grails nav end -->
+            </div>--}% <!-- grails nav end -->
             <!-- Category -->
             <div class="nav" role="navigation">
                 <g:link class="create btn btn-success btn-wide pull-right" uri="/articles/${article.category.id}/create"><i class="fa fa-pencil"></i> <g:message code="default.new.label" args="[entityName]" /></g:link>
@@ -41,7 +41,7 @@
             <!-- user info -->
             <div class="panel panel-default clearfix fa-">
                 <div class="panel-heading clearfix">
-                    %{--<g:avatar avatar="${article.displayAuthor}" size="medium" dateCreated="${article.dateCreated}" changeLog="${changeLogs?.find { it[2] == article.content.id}}" logType="article" class="pull-left" />--}%
+                    <g:avatar avatar="${article.displayAuthor}" size="medium" dateCreated="${article.dateCreated}" changeLog="${changeLogs?.find { it[2] == article.content.id}}" logType="article" class="pull-left" />
                     <div class="content-identity pull-right">
                         <div class="content-identity-count"><i class="fa fa-comment"></i> <g:formatNumber number="${article.noteCount}" /></div>
                         <div class="content-identity-count"><i class="fa fa-eye"></i> <g:formatNumber number="${article.viewCount}" /></div>
@@ -98,34 +98,34 @@
                         <!-- 공유 -->
                         <div class="dropdown">
                             %{--<a href="http://www.facebook.com/sharer/sharer.php?app_id=${grailsApplication.config.oauth.providers.facebook.key}&sdk=joey&u=${encodedURL(withDomain: true)}&display=popup&ref=plugin" class="btn-facebook-share"><i class="fa fa-facebook-square fa-fw" data-toggle="tooltip" data-placement="left" title="페이스북 공유"></i></a>--}%
-                            %{--<a href="javascript://" data-toggle="dropdown" id="sns-share-btn"><i class="fa fa-share-alt" data-toggle="tooltip" data-placement="left" title="SNS 공유"></i></a>
+                            <a href="javascript://" data-toggle="dropdown" id="sns-share-btn"><i class="fa fa-share-alt" data-toggle="tooltip" data-placement="left" title="SNS 공유"></i></a>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="sns-share-btn">
                                 <li><a href="javascript://"><i class="fa fa-facebook-square fa-fw"></i> Facebook</a></li>
                                 <li><a href="javascript://"><i class="fa fa-google-plus-square fa-fw"></i> Google +</a></li>
-                            </ul>--}%
+                            </ul>
                         </div>
 
-                        %{--<g:isAuthorOrAdmin author="${article.author}">--}%
+                        <g:isAuthorOrAdmin author="${article.author}">
                         <div class="dropdown">
                             <g:form resource="${this.article}" name="article-delete-form" method="DELETE">
                                 <div class="dropdown">
                                     <a href="javascript://" data-toggle="dropdown"><i class="fa fa-cog" data-toggle="tooltip" data-placement="left" title="게시물 설정"></i></a>
                                     <ul class="dropdown-menu" role="menu">
                                         <li><g:link class="edit" action="edit" resource="${article}"><i class="fa fa-edit fa-fw"></i> <g:message code="default.button.edit.label" default="Edit" />
-                                        %{--<sec:ifAllGranted roles="ROLE_ADMIN"><span style="color:red;">(관리자권한)</span></sec:ifAllGranted>--}%</g:link></li>
-                                        %{--<g:if test="${notes.size() > 0}">
-                                            <li><a href="javascript://" onclick="alert('댓글이 있는 글은 삭제하실 수 없습니다.');"><i class="fa fa-trash-o fa-fw"></i> ${message(code: 'default.button.delete.label', default: 'Delete')}
-                                                --}%%{--<sec:ifAllGranted roles="ROLE_ADMIN"><span style="color:red;">(관리자권한)</span></sec:ifAllGranted>--}%%{--</a></li>
-                                        </g:if>
+                                        <sec:ifAllGranted roles="ROLE_ADMIN"><span style="color:red;">(관리자권한)</span></sec:ifAllGranted></g:link></li>
+                                        <g:if test="${notes.size() > 0}">
+                                        <li><a href="javascript://" onclick="alert('댓글이 있는 글은 삭제하실 수 없습니다.');"><i class="fa fa-trash-o fa-fw"></i> ${message(code: 'default.button.delete.label', default: 'Delete')}
+                                            <sec:ifAllGranted roles="ROLE_ADMIN"><span style="color:red;">(관리자권한)</span></sec:ifAllGranted></a></li>
+                                    </g:if>
                                         <g:else>
                                             <li><a href="javascript://" id="article-delete-btn"><i class="fa fa-trash-o fa-fw"></i> ${message(code: 'default.button.delete.label', default: 'Delete')}
-                                                --}%%{--<sec:ifAllGranted roles="ROLE_ADMIN"><span style="color:red;">(관리자권한)</span></sec:ifAllGranted>--}%%{--</a></li>
-                                        </g:else>--}%
+                                                <sec:ifAllGranted roles="ROLE_ADMIN"><span style="color:red;">(관리자권한)</span></sec:ifAllGranted></a></li>
+                                        </g:else>
                                     </ul>
                                 </div>
                             </g:form>
                         </div>
-                        %{--</g:isAuthorOrAdmin>--}%
+                        </g:isAuthorOrAdmin>
                     </div>
                 </div>
             </div>
@@ -144,7 +144,7 @@
                             <g:form url="[resource:note, action:'update']" method="PUT" data-id="${note.id}" class="note-update-form">
                                 <div class="content-body panel-body pull-left">
                                     <g:if test="${article.category.useSelectSolution}">
-                                    %{--<g:isAuthor author="${article.author}">
+                                    <g:isAuthor author="${article.author}">
                                         <g:if test="${article.selectedNote?.id == note.id}">
                                             <a href="javascript://" class="note-vote-btn note-select-btn note-selected" data-id="${note.id}" data-type="deselect">
                                                 <i class="fa fa-check"></i>
@@ -164,7 +164,7 @@
                                             </g:else>
                                         </g:else>
                                     </g:isAuthor>
-                                    <g:isNotAuthor author="${article.author}">--}%
+                                    <g:isNotAuthor author="${article.author}">
                                         <g:if test="${article.selectedNote?.id == note.id}">
                                             <div class="note-select-indicator note-selected">
                                                 <i class="fa fa-check"></i>
@@ -175,9 +175,9 @@
                                                 <i class="fa fa-comment"></i>
                                             </div>
                                         </g:else>
-                                    %{--</g:isNotAuthor>--}%
+                                    </g:isNotAuthor>
                                     </g:if>
-
+                                    %{--  대기 --}%
                                 %{--<g:avatar avatar="${note.displayAuthor}" size="medium" dateCreated="${note.dateCreated}" changeLog="${changeLogs?.find { it[2] == note.id}}" logType="content"/>--}%
                                     <fieldset class="form">
                                         <article id="note-text-${note.id}" class="list-group-item-text note-text">
@@ -200,7 +200,7 @@
                                     </div>
                                 </div>
 
-                            %{--<g:isAuthorOrAdmin author="${note.author}">--}%
+                            <g:isAuthorOrAdmin author="${note.author}">
                                 <div id="content-function-cog-${note.id}" class="content-function-cog">
                                     <div class="dropdown">
                                         <a href="javascript://" data-toggle="dropdown"><i class="fa fa-cog" data-toggle="tooltip" data-placement="left" title="게시물 설정"></i></a>
@@ -214,7 +214,7 @@
                                         <p><g:submitButton name="create" class="btn btn-success btn-wide" value="${message(code: 'note.button.edit.label', default: '저장')}" /></p>
                                     </div>
                                 </div>
-                            %{--</g:isAuthorOrAdmin>--}%
+                            </g:isAuthorOrAdmin>
                             </g:form>
 
                             <g:form url="[resource:note, action:'delete']" id="note-delete-form-${note.id}" method="DELETE">
@@ -222,7 +222,7 @@
                         </li>
                     </g:each>
                     <li class="list-group-item note-form clearfix">
-                    %{--<sec:ifLoggedIn>--}%
+                    <sec:ifLoggedIn>
                         <g:form url="[resource:article, action:'addNote']" method="POST" class="note-create-form">
                             <g:if test="${notes}">
                                 <g:hiddenField name="lastNoteId" value="${notes?.last().id} "/>
@@ -234,12 +234,12 @@
                                             <i class="fa fa-edit"></i>
                                         </div>
                                     </g:if>
-                                %{--<g:if test="${article.category.anonymity}">
+                                <g:if test="${article.category.anonymity}">
                                     <g:avatar size="medium" avatar="[nickname: '익명', pictureType:net.okjsp.AvatarPictureType.ANONYMOUSE]"/>
                                 </g:if>
                                 <g:else>
                                     <g:avatar size="medium"/>
-                                </g:else>--}%
+                                </g:else>
                                 </div>
                                 <fieldset class="form">
                                     <g:hiddenField name="note.textType" value="HTML"/>
@@ -251,12 +251,12 @@
                                 <g:submitButton name="create" id="btn-create-btn" class="btn btn-success btn-wide"  value="${message(code: 'note.button.create.label', default: ' 등록')}" />
                             </div>
                         </g:form>
-                    %{--</sec:ifLoggedIn>
+                    </sec:ifLoggedIn>
                     <sec:ifNotLoggedIn>
                         <div class="panel-body">
                             <h5 class="text-center"><g:link uri="/login/auth?redirectUrl=${encodedURL()}" class="link">로그인</g:link>을 하시면 ${noteTitle}을 등록할 수 있습니다.</h5>
                         </div>
-                    </sec:ifNotLoggedIn>--}%
+                    </sec:ifNotLoggedIn>
                     </li>
                 </ul>
             </div>

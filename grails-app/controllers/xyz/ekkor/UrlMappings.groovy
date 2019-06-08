@@ -12,10 +12,12 @@ class UrlMappings {
         "/" (controller: "main", action: 'index')
 
         "/articles/$code/$action?(.$format)?"(controller: "article")
+        "/articles/tagged/$tag(.$format)?"(controller: "article", action: "tagged")
 
         "/article/$id(.$format)?"(controller: "article", action: "show")
         "/article/$action/$id(.$format)?"(controller: "article")
         "/article/$id/$action/$contentId(.$format)?"(controller: "article")
+        "/seq/$id"(controller: "article", action: "seq")
 
         // test용
         /*"/article/index"(controller: "article", action: "index")

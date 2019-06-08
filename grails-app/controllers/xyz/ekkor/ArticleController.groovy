@@ -146,6 +146,10 @@ class ArticleController {
         respond article, model: [contentVotes: contentVotes, notes: notes, contentBanner: contentBanner]
     }
 
+    def seq(Long id) {
+        redirect uri: "/article/${id}"
+    }
+
     //TODO 2019. 06. 03 게시물 작성 페이지
     /**
      *
@@ -277,6 +281,27 @@ class ArticleController {
             }
             '*' { respond article, [status: CREATED] }
         }
+    }
+
+    //TODO 2019. 06.09 tag 클릭
+    def tagged(String tag, Integer max) {
+        params.max = Math.min(max ?: 20, 100)
+        params.sort = params.sort ?: 'id'
+        params.order = params.order ?: 'desc'
+        params.query = params.query?.trim()
+
+        if (tag == null) {
+            notFound()
+            return
+        }
+
+        def articlesQuery = Article.where {
+            tagString =~ "%${tag}%"
+            if (params.query && params.query != '')
+                title =~ "%${params.query}%" || content.text =~ "%${params.query}%"
+        }
+
+        respond articlesQuery.list(params), model:[articleCount: articlesQuery.count()]
     }
 
     def edit(Long id) {

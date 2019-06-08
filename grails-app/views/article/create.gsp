@@ -48,13 +48,13 @@
             </div>
             </g:hasErrors>
             <div class="panel panel-default clearfix">
-                <div class="panel-heading clearfix">avatar
-                    %{--<g:if test="${category?.anonymity}">
+                <div class="panel-heading clearfix">
+                    <g:if test="${category?.anonymity}">
                         <g:avatar avatar="${article.displayAuthor}" size="medium" class="pull-left" />
                     </g:if>
                     <g:else>
                         <g:avatar avatar="${article.displayAuthor}" size="medium" class="pull-left" />
-                    </g:else>--}%
+                    </g:else>
                 </div>
             </div>
             <div class="panel-body">

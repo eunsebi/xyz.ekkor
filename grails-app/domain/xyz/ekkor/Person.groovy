@@ -9,9 +9,9 @@ class Person {
     String email
     String homepageUrl
 
-    Company company
+    //Company company
 
-    Resume resume
+    //Resume resume
 
     boolean dmAllowed = true
 
@@ -22,7 +22,7 @@ class Person {
         fullName blank: false, minSize: 2
         email blank: false, email: true, unique: true
         homepageUrl nullable: true
-        company nullable: true
-        resume nullable: true
+        //company nullable: true
+        //resume nullable: true
     }
 }
