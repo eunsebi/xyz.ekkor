@@ -20,9 +20,54 @@ class UserController {
         }
     }
 
-    def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        respond userService.list(params), model:[userCount: userService.count()]
+    //TODO 2019. 06. 09 user  활동 정보(user/info/id)
+    def index(Integer id, Integer max) {
+        //params.max = Math.min(max ?: 10, 100)
+        //respond userService.list(params), model:[userCount: userService.count()]
+
+        params.max = Math.min(max ?: 20, 100)
+        params.sort = params.sort ?: 'id'
+        params.order = params.order ?: 'desc'
+
+        Avatar currentAvatar = Avatar.get(id)
+        User user = User.findByAvatar(currentAvatar)
+
+        if (user.withdraw) {
+            redirect uri: '/'
+            return
+        }
+
+        def activitiesQuery
+
+        if(params.category == 'activity' || (!params.category && !currentAvatar.official)) {
+            activitiesQuery= Activity.where {
+                avatar == currentAvatar
+            }
+        } else {
+            def category
+
+            if(params.category == 'solved') category = ActivityType.SOLVED
+            else if(params.category == 'scrapped') category = ActivityType.SCRAPED
+            else {
+                params.category = 'articles'
+                category = ActivityType.POSTED
+            }
+
+            activitiesQuery= Activity.where {
+                avatar == currentAvatar
+                type == category
+            }
+        }
+
+        def counts = [
+                postedCount: Activity.countByAvatarAndType(currentAvatar, ActivityType.POSTED),
+                solvedCount: Activity.countByAvatarAndType(currentAvatar, ActivityType.SOLVED),
+                followerCount : Follow.countByFollowing(currentAvatar),
+                followingCount : Follow.countByFollower(currentAvatar),
+                scrappedCount : Scrap.countByAvatar(currentAvatar)
+        ]
+
+        respond user, model: [avatar: currentAvatar, activities: activitiesQuery.list(params), activitiesCount: activitiesQuery.count(), counts: counts]
     }
 
     def show(Long id) {
@@ -55,11 +100,18 @@ class UserController {
         }
     }
 
+    //TODO 2019. 06. 09 user 정보수정 페이지
     def edit(Long id) {
-        respond userService.get(id)
+        //respond userService.get(id)
+        println "User info Edit Lodding..."
+        User user = springSecurityService.currentUser
+
+        respond(user)
     }
 
+    //TODO 2019. 06. 09 user  정보 업데이트
     def update(User user) {
+        println "User Info Update Lodding..."
         if (user == null) {
             notFound()
             return

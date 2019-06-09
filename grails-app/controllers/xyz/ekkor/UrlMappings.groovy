@@ -19,31 +19,20 @@ class UrlMappings {
         "/article/$id/$action/$contentId(.$format)?"(controller: "article")
         "/seq/$id"(controller: "article", action: "seq")
 
-        // test용
-        /*"/article/index"(controller: "article", action: "index")
+        "/user/$action"(controller: "user")
+        "/user/info/$id"(controller: "user", action: "index")
+        "/user/info/$id/$category?"(controller: "user", action: "index")
+        "/user/privacy"(view: '/user/privacy')
+        "/user/agreement"(view: '/user/agreement')
 
-      "/user/$action"(controller: "user")
-       "/user/info/$id"(controller: "user", action: "index")
-       "/user/info/$id/$category?"(controller: "user", action: "index")
-       "/user/privacy"(view: '/user/privacy')
-       "/user/agreement"(view: '/user/agreement')
-
-       "/articles/$code/$action?(.$format)?"(controller: "article")
-       "/articles/tagged/$tag(.$format)?"(controller: "article", action: "tagged")
-
-       "/article/$id(.$format)?"(controller: "article", action: "show")
-       "/article/$action/$id(.$format)?"(controller: "article")
-       "/article/$id/$action/$contentId(.$format)?"(controller: "article")
-       "/seq/$id"(controller: "article", action: "seq")
-
-       "/banner/stats/$id(.$format)?"(controller: "banner", action: "stats")
+       //"/banner/stats/$id(.$format)?"(controller: "banner", action: "stats")
        "/file/uploadFile"(controller: "file", action: "uploadFile")
        "/file/uploadImg"(controller: "file", action: "uploadImg")
        "/file/deleteFile"(controller: "file", action: "deleteFile")
 
-       "/find/user?/$action"(controller: "findUser")
+       //"/find/user?/$action"(controller: "findUser")
 
-       *//* Admin *//*
+       //* Admin *//
 
        "/_admin/banner/$action?/$id?(.$format)?"(controller: "banner")
        //"/_admin/spamWord/$action?/$id?(.$format)?"(controller: "spamWord")
@@ -54,7 +43,7 @@ class UrlMappings {
        //"/_admin/dm/export"(controller: "dm", action: 'export')
        //"/_admin/dm/reject"(controller: "dm", action: 'reject')
        //"/_admin/dm/updateReject"(controller: "dm", action: 'updateReject')
-       "/_admin"(controller: "statistic")*/
+       "/_admin"(controller: "statistic")
 
         "/grails"(view:"/index")
         "500"(view:'/error')
