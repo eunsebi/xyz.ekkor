@@ -87,13 +87,13 @@ class User implements Serializable {
         Calendar time = Calendar.getInstance()
         String format_time1 = format1.format(time.getTime())
         if (Environment.current == Environment.DEVELOPMENT)
-        dateJoined formula: "FORMATDATETIME(date_created, 'yyyy-MM-dd')"
-            //dateJoined formula: "DATE_FORMAT(date_created, '%Y-%m-%d')"
+            //dateJoined formula: "FORMATDATETIME(date_created, 'yyyy-MM-dd')"
+            dateJoined formula: "DATE_FORMAT(date_created, '%Y-%m-%d')"
             //dateJoined formula : format_time1
 
         if (Environment.current == Environment.PRODUCTION)
-            dateJoined formula: "FORMATDATETIME(date_created, 'yyyy-MM-dd')"
-            //dateJoined formula: "DATE_FORMAT(date_created, '%Y-%m-%d')"
+            //dateJoined formula: "FORMATDATETIME(date_created, 'yyyy-MM-dd')"
+            dateJoined formula: "DATE_FORMAT(date_created, '%Y-%m-%d')"
             //dateJoined formula : format_time1
     }
 
