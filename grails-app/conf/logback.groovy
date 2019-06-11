@@ -35,7 +35,8 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
     //logger("StackTrace", INFO, ['FULL_STACKTRACE'], false)
     logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
     logger 'grails.plugin.springsecurity.web.filter.DebugFilter', INFO, ['STDOUT'], false
-    //logger( 'org.springframework.security', DEBUG)
+    logger( 'org.springframework.security', DEBUG)
+    logger 'xyz.ekkor', INFO, ['STDOUT']
     root(INFO, ['STDOUT', 'FULL_STACKTRACE'])
 }
 root(ERROR, ['STDOUT'])
