@@ -15,6 +15,7 @@ class BootStrap {
         log.info "Loading database..."
         if ( Environment.current == Environment.DEVELOPMENT ) {
             configureForDevelopment()
+            //configureForCategoryDevelopment()
         } else if ( Environment.current == Environment.TEST ) {
             configureForTest()
         } else if ( Environment.current == Environment.PRODUCTION ) {
@@ -39,17 +40,17 @@ class BootStrap {
 
         //if(!User.findByUsername('admin')) {
 
-            // 테스트 User 생성
-            def adminUser = new User(
-                    username: 'admin',
-                    password: 'admin123',
-                    person: new Person(fullName: '관리자', email: 'admin@ekkor.xyz'),
-                    avatar: new Avatar(nickname: '관리자')
-            )
-            adminUser.enabled = true
-            adminUser.createIp = '0.0.0.0'
-            userDataService.saveUser adminUser
-            UserRole.create(adminUser, adminRole)
+        // 테스트 User 생성
+        def adminUser = new User(
+                username: 'admin',
+                password: 'admin123',
+                person: new Person(fullName: '관리자', email: 'admin@ekkor.xyz'),
+                avatar: new Avatar(nickname: '관리자')
+        )
+        adminUser.enabled = true
+        adminUser.createIp = '0.0.0.0'
+        userDataService.saveUser adminUser
+        UserRole.create(adminUser, adminRole)
         //}
 
         /*def authorities = ['ROLE_CLIENT']
@@ -67,7 +68,11 @@ class BootStrap {
             def ur = new UserRole(user: u, role:  Role.findByAuthority('ROLE_CLIENT'))
             ur.save()
         }*/
+    }
 
+
+    @CompileStatic
+    void configureForCategoryDevelopment() {
         // 1 Level Category
         def questionsCategory = Category.get('questions') ?: new Category(code: 'questions', labelCode: 'questions.label', defaultLabel: 'Q&A', iconCssNames: 'fa fa-database', sortOrder: 0, writable: true, useNote: true, useOpinion: true, useEvaluate: true, useTag: true, requireTag: true).save(flush: true)
         def techCategory = Category.get('tech') ?: new Category(code: 'tech', labelCode: 'tech.label', defaultLabel: 'Tech', iconCssNames: 'fa fa-code', sortOrder: 1, writable: false, useNote: true, useOpinion: false, useEvaluate: false, useTag: true).save(flush: true)
