@@ -10,7 +10,7 @@ class MainService {
 
     SpringSecurityService springSecurityService
 
-    @Cacheable(value="choiceArticlesCache")
+    //@Cacheable(value="choiceArticlesCache")
     def getChoiceArticles() {
 
         Article.withCriteria() {
@@ -25,7 +25,7 @@ class MainService {
         }.findAll()
     }
 
-    @Cacheable(value="weeklyArticlesCache")
+    //@Cacheable(value="weeklyArticlesCache")
     def getWeeklyArticles() {
 
         def diff = new Date() - 7
@@ -57,7 +57,7 @@ class MainService {
         }.findAll()
     }
 
-    @Cacheable("qnaArticlesCache")
+    //@Cacheable("qnaArticlesCache")
     def getQnaArticles() {
         Article.withCriteria() {
             fetchMode 'content', FetchMode.JOIN
@@ -70,7 +70,7 @@ class MainService {
         }.findAll()
     }
 
-    @Cacheable("communityArticlesCache")
+    //@Cacheable("communityArticlesCache")
     def getCommunityArticles() {
 
         def categories = Category.get('community').children.findAll { it.code != 'promote' }
@@ -86,7 +86,7 @@ class MainService {
         }.findAll()
     }
 
-    @Cacheable("informArticlesCache")
+    //@Cacheable("informArticlesCache")
     def getInformArticles() {
 
         def categories = Category.get('inform').children.findAll { it.code != 'promote' }
@@ -103,7 +103,7 @@ class MainService {
         }.findAll()
     }
 
-    @Cacheable("classArticlesCache")
+    //@Cacheable("classArticlesCache")
     def getClassArticles() {
         Article.withCriteria() {
             fetchMode 'content', FetchMode.JOIN
@@ -116,7 +116,7 @@ class MainService {
         }.findAll()
     }
 
-    @Cacheable("leaderArticlesCache")
+    //@Cacheable("leaderArticlesCache")
     def getLeaderArticles() {
         Article.withCriteria() {
             fetchMode 'content', FetchMode.JOIN
@@ -129,7 +129,7 @@ class MainService {
         }.findAll()
     }
 
-    @Cacheable("maintArticlesCache")
+    //@Cacheable("maintArticlesCache")
     def getMaintArticles() {
         Article.withCriteria() {
             fetchMode 'content', FetchMode.JOIN

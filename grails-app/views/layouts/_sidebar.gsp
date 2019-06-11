@@ -9,7 +9,7 @@
 
     <h1><div class="logo"><g:link uri="/"><asset:image src="okjsp_logo.png" alt="ekkor" title="ekkor" /></g:link></div></h1>
 
-    <ul id="search-google-icon" class="nav nav-sidebar nav-sidebar-search-wrapper">
+    %{--<ul id="search-google-icon" class="nav nav-sidebar nav-sidebar-search-wrapper">
         <li class="nav-sidebar-search"><a href="javascript://" class="link" id="search-google" data-toggle="popover" data-trigger="click"><i class="fa fa-search"></i></a></li>
     </ul>
 
@@ -21,7 +21,7 @@
                 <button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
             </span>
         </div>
-    </form>
+    </form>--}%
 
     <div class="nav-user nav-sidebar">
         <sec:ifLoggedIn>

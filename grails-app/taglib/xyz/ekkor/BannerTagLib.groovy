@@ -1,6 +1,7 @@
 package xyz.ekkor
 
 import org.grails.web.servlet.mvc.GrailsWebRequest
+import org.grails.web.util.WebUtils
 import org.springframework.mobile.device.Device
 
 class BannerTagLib {

@@ -111,13 +111,13 @@
 </div>
 
 <div class="form-group ${hasErrors(bean: article.content, field: 'text', 'has-error')} has-feedback">
-    <g:if test="${article?.content?.textType == ContentTextType.MD}">MD
+    <g:if test="${article?.content?.textType == ContentTextType.MD}">
         <g:textArea name="content.text" id="summernote" value="${markdown.renderHtml([text: article?.content?.text])}" rows="20" class="form-control input-block-level" />
     </g:if>
-    <g:elseif test="${article?.content?.textType == ContentTextType.HTML}">HTML
+    <g:elseif test="${article?.content?.textType == ContentTextType.HTML}">
         <g:textArea name="content.text" id="summernote" value="${filterHtml([text: article?.content?.text])}" rows="20" class="form-control input-block-level" />
     </g:elseif>
-    <g:else>text
+    <g:else>
         <g:textArea name="content.text" id="summernote" value="${lineToBr([text: article?.content?.text])}" rows="20" class="form-control input-block-level" />
     </g:else>
 </div>

@@ -2,7 +2,7 @@
 <html>
 <head>
     %{--<meta name="layout" content="${gspLayout ?: 'main_ekkor'}"/>--}%
-    <meta name="layout" content="main_ekkor">
+    <meta name="layout" content="main">
     <g:set var="entityName" value="${message(code: 'user.label', default: 'User')}" />
 
     <asset:stylesheet src="style.css"/>
