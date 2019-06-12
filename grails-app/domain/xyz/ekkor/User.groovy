@@ -63,7 +63,8 @@ class User implements Serializable {
         username(blank: false, unique: true, size: 4..15, matches: /[a-z0-9]{4,15}/, validator: {
             if(disAllowUsernameFilter(it)) return ['default.invalid.disallow.message']
         })
-        password blank: false, minSize: 4, matches: /^(?=.*[0-9])(?=.*[a-zA-Z]).*$/
+        //password blank: false, minSize: 4, matches: /^(?=.*[0-9])(?=.*[a-zA-Z]).*$/
+        password blank: false, minSize: 4
         person unique: true
         avatar unique: true
         enabled bindable: true

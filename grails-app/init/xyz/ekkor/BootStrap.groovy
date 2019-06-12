@@ -14,6 +14,7 @@ class BootStrap {
     def init = { servletContext ->
         log.info "Loading database..."
         if ( Environment.current == Environment.DEVELOPMENT ) {
+            //userAddForDevelopment()
             //configureForDevelopment()
             //configureForCategoryDevelopment()
         } else if ( Environment.current == Environment.TEST ) {
@@ -21,6 +22,23 @@ class BootStrap {
         } else if ( Environment.current == Environment.PRODUCTION ) {
             configureForProduction()
         }
+    }
+
+    @CompileStatic
+    void userAddForDevelopment() {
+        def adminRole = new Role(authority: 'ROLE_ADMIN').save(flush: true)
+
+        // 테스트 User 생성
+        def eunsebiUser = new User(
+                username: 'eunsebi',
+                password: '1234',
+                person: new Person(fullName: '은서비', email: 'eunsebi@ekkor.xyz'),
+                avatar: new Avatar(nickname: '은서비')
+        )
+        eunsebiUser.enabled = true
+        eunsebiUser.createIp = '0.0.0.0'
+        userDataService.saveUser eunsebiUser
+        UserRole.create(eunsebiUser, adminRole)
     }
 
     @CompileStatic

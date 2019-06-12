@@ -1,5 +1,6 @@
 package xyz.ekkor
 
+import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
 
@@ -70,6 +71,7 @@ class UserController {
         respond user, model: [avatar: currentAvatar, activities: activitiesQuery.list(params), activitiesCount: activitiesQuery.count(), counts: counts]
     }
 
+    @Secured("USER_ADMIN")
     def show(Long id) {
         respond userService.get(id)
     }
