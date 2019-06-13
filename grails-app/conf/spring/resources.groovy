@@ -8,7 +8,7 @@ import xyz.ekkor.encoding.UserPasswordEncoderListener
 beans = {
     userDetailsService(CustomUserDetailService)
     securityEventListener(CustomSecurityEventListener)
-    passwordEncoder(OldPasswordEncoder)
+    //passwordEncoder(OldPasswordEncoder)
     userPasswordEncoderListener(UserPasswordEncoderListener, ref('hibernateDatastore'))
     multipartResolver(org.springframework.web.multipart.commons.CommonsMultipartResolver){
         maxInMemorySize=1000000
