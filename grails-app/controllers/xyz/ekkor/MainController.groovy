@@ -7,8 +7,7 @@ class MainController {
     def grailsCacheAdminService
 
     def index() {
-        println "Main Controller Index Loding....."
-        log.info "Main Controller Index Loardding..... log Info"
+        log.info "Main Controller Index Loardding....."
         def mainBanners = Banner.where {
             type == BannerType.MAIN && visible == true
         }.list()

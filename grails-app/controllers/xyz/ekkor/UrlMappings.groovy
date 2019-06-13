@@ -30,7 +30,7 @@ class UrlMappings {
        "/file/uploadImg"(controller: "file", action: "uploadImg")
        "/file/deleteFile"(controller: "file", action: "deleteFile")
 
-       //"/find/user?/$action"(controller: "findUser")
+       "/find/user?/$action"(controller: "findUser")
 
        //* Admin *//
 

@@ -7,6 +7,7 @@ import static org.springframework.http.HttpStatus.*
 class UserController {
 
     UserService userService
+    UserDataService userDataService
     def springSecurityService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -71,7 +72,6 @@ class UserController {
         respond user, model: [avatar: currentAvatar, activities: activitiesQuery.list(params), activitiesCount: activitiesQuery.count(), counts: counts]
     }
 
-    @Secured("USER_ADMIN")
     def show(Long id) {
         respond userService.get(id)
     }
@@ -80,6 +80,11 @@ class UserController {
         respond new User(params)
     }
 
+    def register() {
+        respond new User(params)
+    }
+
+    //TODO 2019. 06. 13 user 회원가입 저장
     def save(User user) {
         if (user == null) {
             notFound()
@@ -87,19 +92,97 @@ class UserController {
         }
 
         try {
-            userService.save(user)
+            def realIp = userDataService.getRealIp(request)
+
+            user.createIp = realIp
+
+            //userService.save(user)
+            userDataService.saveUser(user)
+
+            // 가입승인 확인 메일 발송
+            /*def key = userService.createConfirmEmail(user)
+
+            mailService.sendMail {
+                async true
+                to user.person.email
+                subject message(code:'email.join.subject')
+                body(view:'/email/join_confirm', model: [user: user, key: key, grailsApplication: grailsApplication] )
+            }
+
+            session['confirmSecuredKey'] = key*/
+
+
         } catch (ValidationException e) {
-            respond user.errors, view:'create'
+            respond user.errors, view:'register'
             return
         }
 
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.created.message', args: [message(code: 'user.label', default: 'User'), user.id])
-                redirect user
+                //redirect user
+                //redirect action: 'complete'
+                render view: 'complete'
             }
             '*' { respond user, [status: CREATED] }
         }
+    }
+
+    //TODO 2019. 06. 13 회원가입 완료 처리
+    def complete() {
+        if (springSecurityService.isLoggedIn()) {
+            redirect uri: "/"
+            return
+        }
+
+        // 메일 발송
+        /*def confirmEmail = ConfirmEmail.where {
+            securedKey == session['confirmSecuredKey'] &&
+                    dateExpired > new Date()
+        }.get()
+
+        if(!confirmEmail) {
+            flash.message = message(code: 'default.expired.link.message')
+            redirect uri: '/login/auth'
+            return
+        }*/
+
+        //render view: 'complete', model: [email: confirmEmail.email]
+        render view: 'complete'
+    }
+
+    //TODO 2019. 06. 13 메일 발송 실행 및 완료 화면
+    def confirm(String key) {
+
+        if(springSecurityService.isLoggedIn()) {
+            redirect uri: "/"
+            return
+        }
+
+        session.invalidate()
+
+        /*def confirmEmail = ConfirmEmail.where {
+            securedKey == key &&
+                    dateExpired > new Date()
+        }.get()
+
+        if(!confirmEmail) {
+            flash.message = message(code: 'default.expired.link.message')
+            redirect uri: '/login/auth'
+            return
+        }
+
+        User user = confirmEmail.user
+
+        user.person.email = confirmEmail.email
+        user.person.save()
+
+        user.enabled = true
+        user.save()
+
+        confirmEmail.delete(flush: true)*/
+
+        render view: 'confirm'
     }
 
     //TODO 2019. 06. 09 user 정보수정 페이지

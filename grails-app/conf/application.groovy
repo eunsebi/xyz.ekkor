@@ -42,6 +42,7 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 		[pattern: '/user/passwordChange', 	 access: ['ROLE_USER']],
 		[pattern: '/user/updatePasswordChange', 	 access: ['ROLE_USER']],
 		[pattern: '/find/user/**', 	 access: ['permitAll']],
+		[pattern: '/find/user/index', 	 access: ['permitAll']],
 		[pattern: '/file/**', 	 access: ['ROLE_USER']]
 ]
 
