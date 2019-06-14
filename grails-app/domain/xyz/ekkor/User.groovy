@@ -45,7 +45,7 @@ class User implements Serializable {
         (UserRole.findAllByUser(this) as List<UserRole>)*.role as Set<Role>
     }
 
-    def beforeInsert() {
+    /*def beforeInsert() {
         encodePassword()
     }
 
@@ -53,11 +53,11 @@ class User implements Serializable {
         if (isDirty('password')) {
             encodePassword()
         }
-    }
+    }*/
 
-    protected void encodePassword() {
+    /*protected void encodePassword() {
         password = springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
-    }
+    }*/
 
     static constraints = {
         username(blank: false, unique: true, size: 4..15, matches: /[a-z0-9]{4,15}/, validator: {

@@ -37,11 +37,11 @@ class UserPasswordEncoderListener extends AbstractPersistenceEventListener {
         eventType == PreUpdateEvent || eventType == PreInsertEvent
     }
 
-    private String encodePassword(String password) {
+    /*private String encodePassword(String password) {
         springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
-    }
+    }*/
 
-    /*String encodePassword(String password, Object salt = null) {
+    String encodePassword(String password, Object salt = null) {
 
         def input = password.getBytes()
 
@@ -85,6 +85,8 @@ class UserPasswordEncoderListener extends AbstractPersistenceEventListener {
                 .append(Long.toString((nr2 & 0x0F), 16))
 
         sb.toString()
-    }*/
+
+        //springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
+    }
 
 }

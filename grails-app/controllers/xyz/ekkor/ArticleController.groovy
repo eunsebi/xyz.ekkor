@@ -30,19 +30,18 @@ class ArticleController {
      */
     def index(String code, Integer max) {
     //def index(Integer max) {
-        println "Loading Arcicle List(index) database..."
-        log.info("log ----- Loading Arcicle List database...")
+        log.info("Loading Arcicle List(index) database...")
 
         params.max = Math.min(max ?: 10, 100)
         params.sort = params.sort ?: 'id'
         params.order = params.order ?: 'desc'
         params.query = params.query?.trim()
 
-        println "code : " + code
+        log.info "code : " + code
 
         def category = Category.get(code)
 
-        println "category : " + category
+        log.info "category : " + category
 
         if(category == null) {
             notFound()
@@ -76,7 +75,7 @@ class ArticleController {
             }*/
         }
 
-        println "params : " + params
+        log.info "params : " + params
 
         def articles = articlesQuery.list(params)
         //respond articles, model:[articleCount: articleService.count(), category: category]
@@ -97,7 +96,7 @@ class ArticleController {
     def show(Long id) {
         log.info("article show start")
         //respond articleService.get(id)
-        println "article show Loding......"
+        log.info "article show Loding......"
 
         def contentVotes = [], scrapped
 
@@ -161,7 +160,7 @@ class ArticleController {
 
         //Article article = new Article(params)
 
-        println "params : " + params
+        log.info "params : " + params
 
         def category =Category.get(code)
 
@@ -217,18 +216,18 @@ class ArticleController {
     def save(String code) {
         log.info("article save start")
 
-        println "Article Save Loding......."
+        log.info "Article Save Loding......."
 
         Article article = new Article(params)
 
-        println "Artice Save Params : " + params
-        println "Article save article : " + article
-        println "category code : " + params.code
+        log.info "Artice Save Params : " + params
+        log.info "Article save article : " + article
+        log.info "category code : " + params.code
 
         //Category category = Category.get(article.category)
         Category category = Category.get(params.code)
 
-        println "category : " + category
+        log.info "category : " + category
 
         User user = springSecurityService.loadCurrentUser()
 
@@ -248,7 +247,7 @@ class ArticleController {
 
             Avatar author = Avatar.load(springSecurityService.principal.avatarId)
 
-            println "avatar : " + author
+            log.info "avatar : " + author
 
             if(SpringSecurityUtils.ifAllGranted("ROLE_ADMIN")) {
                 article.choice = params.choice?:false
@@ -372,7 +371,7 @@ class ArticleController {
 
             content.createIp = userDataService.getRealIp(request)
 
-            println "댓글 서비스 가자"
+            log.info "댓글 서비스 가자"
             articleDataService.addNote(article, content, avatar)
 
             withFormat {
