@@ -14,7 +14,7 @@ class CategoryController {
         respond categoryService.list(params), model:[categoryCount: categoryService.count()]
     }
 
-    def show(Long id) {
+    def show(String id) {
         respond categoryService.get(id)
     }
 
@@ -44,7 +44,7 @@ class CategoryController {
         }
     }
 
-    def edit(Long id) {
+    def edit(String id) {
         respond categoryService.get(id)
     }
 

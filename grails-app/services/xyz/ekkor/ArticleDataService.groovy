@@ -10,6 +10,8 @@ class ArticleDataService {
 
     ActivityService activityService
     ArticleService articleService
+    NotificationService notificationService
+
     def grailsApplication
 
     //TODO 2019. 05. 22 댓글 추가
@@ -176,4 +178,77 @@ class ArticleDataService {
             }
         }
     }
+
+    //TODO 2019. 06. 19  게시물 수정
+    def update(Article article, Avatar editor, Category category) {
+        println "gggggggggggggggg"
+        article.category = category
+
+        article.lastEditor = editor
+        article.content.lastEditor = editor
+
+        article.content.save()
+        article.save()
+    }
+
+    //TODO 2019. 06. 15  게시물 삭제
+    def delete(Article article) {
+
+        article.enabled = false
+
+        article.save()
+
+        /*activityService.removeAllByArticle(article)
+
+        notificationService.removeFromArticle(article)
+
+        removeNotices(article)
+
+        Scrap.where { eq('article', article)}.deleteAll()
+
+        Content content = article.content
+
+        ChangeLog.where { eq('article', article)}.deleteAll()
+
+        article.content = null
+        article.save()
+
+        ContentVote.where {
+            eq('article', article)
+        }.deleteAll()
+
+        content.delete()
+
+        if (article.anonymity) {
+            Anonymous.where {
+                eq('article', article)
+                eq('content', article.content)
+            }.deleteAll()
+        }
+
+        article.delete()*/
+    }
+
+    def removeNotices(Article article) {
+        def query = ArticleNotice.where {
+            eq('article', article)
+        }
+        query.deleteAll()
+    }
+
+    def saveNotices(Article article, User user, def categories) {
+
+        categories.each {
+            String it ->
+                def category = Category.get(it)
+
+                def existNotice = ArticleNotice.findAllByArticleAndCategory(article, category)
+
+                if (!existNotice) {
+                    def articleNotice = new ArticleNotice(article: article, user: user, category: category)
+                    articleNotice.save()
+                }
+        }
+    }
+
 }

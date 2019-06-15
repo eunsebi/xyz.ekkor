@@ -13,6 +13,8 @@ class ArticleController {
 
     ArticleService articleService
     ArticleDataService articleDataService
+    ActivityService activityService
+    NotificationService notificationService
     UserDataService userDataService
     SpringSecurityService springSecurityService
 
@@ -94,7 +96,6 @@ class ArticleController {
      * @return
      */
     def show(Long id) {
-        log.info("article show start")
         //respond articleService.get(id)
         log.info "article show Loding......"
 
@@ -112,16 +113,16 @@ class ArticleController {
         if (springSecurityService.loggedIn) {
             Avatar avatar = Avatar.load(springSecurityService.principal.avatarId)
             contentVotes = ContentVote.findAllByArticleAndVoter(article, avatar)
-            //scrapped = Scrap.findByArticleAndAvatar(article, avatar)
+            scrapped = Scrap.findByArticleAndAvatar(article, avatar)
         }
 
         def category = Category.get(article.categoryId)
 
         // 권한 확인
-        /*if (!SpringSecurityUtils.ifAllGranted(category.categoryLevel)) {
+        if (!SpringSecurityUtils.ifAllGranted(category.categoryLevel)) {
             notAcceptable()
             return
-        }*/
+        }
 
         def notes = Content.findAllByArticleAndTypeAndEnabled(article, ContentType.NOTE, true)
 
@@ -131,18 +132,18 @@ class ArticleController {
 
         def contentBanner = contentBanners ? randomService.draw(contentBanners) : null
 
-        /*def changeLogs = ChangeLog.createCriteria().list {
+        def changeLogs = ChangeLog.createCriteria().list {
             eq('article', article)
             projections {
                 sqlGroupProjection 'article_id as articleId, max(date_created) as dateCreated, content_id as contentId', 'content_id',
                         ['articleId', 'dateCreated', 'contentId'],
                         [StandardBasicTypes.LONG, StandardBasicTypes.TIMESTAMP, StandardBasicTypes.LONG]
             }
-        }*/
+        }
 
-        //respond article, model: [contentVotes: contentVotes, notes: notes, scrapped: scrapped, contentBanner: contentBanner, changeLogs: changeLogs]
+        respond article, model: [contentVotes: contentVotes, notes: notes, scrapped: scrapped, contentBanner: contentBanner, changeLogs: changeLogs]
         //respond article, model: [contentVotes: contentVotes, notes: notes, scrapped: scrapped, contentBanner: contentBanner]
-        respond article, model: [contentVotes: contentVotes, notes: notes, contentBanner: contentBanner]
+        //respond article, model: [contentVotes: contentVotes, notes: notes, contentBanner: contentBanner]
     }
 
     def seq(Long id) {
@@ -247,8 +248,6 @@ class ArticleController {
 
             Avatar author = Avatar.load(springSecurityService.principal.avatarId)
 
-            log.info "avatar : " + author
-
             if(SpringSecurityUtils.ifAllGranted("ROLE_ADMIN")) {
                 article.choice = params.choice?:false
                 article.enabled = !params.disabled
@@ -303,17 +302,54 @@ class ArticleController {
         respond articlesQuery.list(params), model:[articleCount: articlesQuery.count()]
     }
 
+    //TODO  게시물 수정 페이지
     def edit(Long id) {
-        respond articleService.get(id)
+        //respond articleService.get(id)
+        Article article = Article.get(id)
+
+        if (article == null) {
+            notFound()
+            return
+        }
+
+        if(SpringSecurityUtils.ifNotGranted("ROLE_ADMIN")) {
+            if (article.authorId != springSecurityService.principal.avatarId) {
+                notAcceptable()
+                return
+            }
+        }
+
+        def writableCategories
+        def categories = Category.findAllByEnabled(true)
+
+        if(SpringSecurityUtils.ifAllGranted("ROLE_ADMIN")) {
+            writableCategories = Category.findAllByWritableAndEnabled(true, true)
+        } else {
+            writableCategories = article.category.children ?: article.category.parent?.children ?: [article.category]
+        }
+
+        if(params.categoryCode) {
+            article.category = Category.get(params.categoryCode)
+        }
+
+        def notices = ArticleNotice.findAllByArticle(article)
+
+        respond article, model: [writableCategories: writableCategories, categories: categories, notices: notices]
+
     }
 
-    def update(Article article) {
+    // update
+    /*def update(Article article, Avatar editor, Category category) {
         if (article == null) {
             notFound()
             return
         }
 
         try {
+            article.category = category
+            article.lastEditor = editor
+            article.content.lastEditor = editor
+
             articleService.save(article)
         } catch (ValidationException e) {
             respond article.errors, view:'edit'
@@ -327,20 +363,99 @@ class ArticleController {
             }
             '*'{ respond article, [status: OK] }
         }
+    }*/
+
+    //TODO  게시물 수정 함수
+    def update(Article article) {
+        User user = springSecurityService.loadCurrentUser()
+
+        if (SpringSecurityUtils.ifAllGranted("ROLE_ADMIN")) {
+            if (article.authorId != springSecurityService.principal.avatarId) {
+                notAcceptable()
+                return
+            }
+        }
+
+        if (user.accountLocked || user.accountExpired) {
+            forbidden()
+            return
+        }
+
+        try {
+            withForm {
+
+                Avatar editor = Avatar.get(springSecurityService.principal.avatarId)
+
+                Category category = Category.get(params.categoryCode)
+
+                if (SpringSecurityUtils.ifAllGranted("ROLE_ADMIN")) {
+                    article.choice = params.choice ?: false
+                    article.enabled = !params.disabled
+                    article.ignoreBest = params.ignore ?: false
+                }
+
+                articleDataService.update(article, editor, category)
+
+                articleDataService.removeNotices(article)
+
+                articleDataService.saveNotices(article, user, params.list('notices'))
+
+                withFormat {
+                    html {
+                        flash.message = message(code: 'default.updated.message', args: [message(code: 'Article.label', default: 'Article'), article.id])
+                        redirect article
+                    }
+                    json { respond article, [status: OK] }
+                }
+
+            }.invalidToken {
+                redirect article
+            }
+        } catch (ValidationException e) {
+            respond(article.errors, view: 'edit')
+        }
     }
 
+    //TODO  게시물 삭제
     def delete(Long id) {
         if (id == null) {
             notFound()
             return
         }
 
-        articleService.delete(id)
+        println "delete Id : " + id
+
+        Article article = Article.get(id)
+
+        User user = springSecurityService.loadCurrentUser()
+
+        def categoryCode = article.category.code
+
+        if (article == null) {
+            notFound()
+            return
+        }
+
+        if(user.accountLocked || user.accountExpired) {
+            forbidden()
+            return
+        }
+
+        if(SpringSecurityUtils.ifNotGranted("ROLE_ADMIN")) {
+            if (article.authorId != springSecurityService.principal.avatarId) {
+                notAcceptable()
+                return
+            }
+        }
+
+        articleDataService.delete(article)
 
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.deleted.message', args: [message(code: 'article.label', default: 'Article'), id])
-                redirect action:"index", method:"GET"
+                flash.status = "success"
+                //redirect action:"index", method:"GET"
+                redirect uri: "/articles/${categoryCode}", method:"GET"
             }
             '*'{ render status: NO_CONTENT }
         }
@@ -427,6 +542,16 @@ class ArticleController {
                 redirect uri: '/'
             }
             json { render status: FORBIDDEN }
+        }
+    }
+
+    protected notAcceptable() {
+        withFormat {
+            html {
+                flash.message = message(code: 'default.notAcceptable.message', args: [message(code: 'article.label', default: 'Article'), params.id])
+                redirect uri: '/'
+            }
+            json { render status: NOT_ACCEPTABLE }
         }
     }
 }

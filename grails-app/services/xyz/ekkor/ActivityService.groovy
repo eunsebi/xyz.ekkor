@@ -49,6 +49,16 @@ class ActivityService {
         activity
     }
 
+    /**
+     *  게시물 삭제 연동
+     * @param article
+     */
+    def removeAllByArticle(Article article) {
+        def activities = Activity.findAllByArticle(article)
+
+        Activity.deleteAll(activities)
+    }
+
     def serviceMethod() {
 
     }

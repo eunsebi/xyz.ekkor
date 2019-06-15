@@ -1,9 +1,11 @@
 package xyz.ekkor
 
+import grails.plugin.springsecurity.SpringSecurityService
+
 class SideBarTagLib {
 
-    //SpringSecurityService springSecurityService
-    //NotificationService notificationService
+    SpringSecurityService springSecurityService
+    NotificationService notificationService
 
     /**
      * sidebar
@@ -15,13 +17,13 @@ class SideBarTagLib {
         Category category = attrs.category
         int notificationCount = 0
 
-        /*if(springSecurityService.loggedIn) {
+        if(springSecurityService.loggedIn) {
             Avatar avatar = Avatar.get(springSecurityService.principal.avatarId)
             notificationCount = notificationService.count(avatar)
-        }*/
+        }
 
-        //out << render(template: '/layouts/sidebar', model: [category: category, notificationCount: notificationCount])
-        out << render(template: '/layouts/sidebar', model: [category: category])
+        out << render(template: '/layouts/sidebar', model: [category: category, notificationCount: notificationCount])
+        //out << render(template: '/layouts/sidebar', model: [category: category])
     }
 
     def encodedURL = { attrs, body ->

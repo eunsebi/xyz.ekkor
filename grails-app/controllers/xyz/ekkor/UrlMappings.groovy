@@ -11,6 +11,8 @@ class UrlMappings {
 
         "/" (controller: "main", action: 'index')
 
+        //"/category/$action"(controller: "category")
+
         "/articles/$code/$action?(.$format)?"(controller: "article")
         "/articles/tagged/$tag(.$format)?"(controller: "article", action: "tagged")
 
