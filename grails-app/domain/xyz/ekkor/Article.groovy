@@ -170,6 +170,12 @@ class Article {
         }
     }
 
+    def updateScrapCount(def i) {
+        if(id != null) {
+            executeUpdate("update Article set scrapCount = scrapCount+:i where id = :id",[i:i, id: id])
+        }
+    }
+
     String toString() {
         return "#${id} - ${title}"
     }

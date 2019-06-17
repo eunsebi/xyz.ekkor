@@ -2,6 +2,8 @@ package xyz.ekkor
 
 class ContentVote {
 
+    transient articleDataService
+
     Integer point = 1
 
     Article article

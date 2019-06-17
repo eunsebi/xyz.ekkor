@@ -2,6 +2,8 @@ package xyz.ekkor
 
 class Content {
 
+    transient articleDataService
+
     ContentType type = ContentType.ARTICLE
     ContentTextType textType = ContentTextType.MD
     String text
@@ -21,7 +23,17 @@ class Content {
     Date dateCreated
     Date lastUpdated
 
+    static hasMany = [files: AttachedFile, contetnVotes: ContentVote]
+
     static belongsTo = [article: Article]
+
+    static mapping = {
+        text type: 'text'
+        textType enumType: 'ordinal'
+        type enumType: 'ordinal'
+        sort id:'asc'
+        contetnVotes cascade: 'all-delete-orphan'
+    }
 
     static constraints = {
         text blank: false
@@ -52,4 +64,20 @@ class Content {
             }
         }
     }
+
+    def beforeUpdate() {
+        if(isDirty("text")) {
+            text = sanitizeService.sanitize(text)
+
+            articleDataService.changeLog(ChangeLogType.CONTENT, article, this,  this.getPersistentValue('text'), text)
+        }
+
+        if(anonymity) {
+            anonymity = true
+            lastEditor = null
+            author = null
+        }
+    }
+
+    String toString() { text }
 }

@@ -524,6 +524,41 @@ class ArticleController {
         }
     }
 
+    //TODO 2019. 06. 17 스크랩
+    def scrap(Long id) {
+        Article article = Article.get(id)
+
+        if (article == null) {
+            notFound()
+            return
+        }
+
+        try {
+            Avatar avatar = Avatar.get(springSecurityService.principal.avatarId)
+
+            if (Scrap.countByArticleAndAvatar(article, avatar) < 1) {
+                articleDataService.saveScrap(article, avatar)
+            } else {
+                articleDataService.deleteScrap(article, avatar)
+            }
+
+            withFormat {
+                html { redirect article }
+                json {
+                    article.refresh()
+                    def result = [scrapCount: article.scrapCount]
+                    respond result
+                }
+            }
+
+
+        } catch (ValidationException e) {
+            flash.error = e.message
+            redirect article
+        }
+
+    }
+
     protected void notFound() {
         request.withFormat {
             form multipartForm {

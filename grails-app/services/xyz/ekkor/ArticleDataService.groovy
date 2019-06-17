@@ -52,7 +52,7 @@ class ArticleDataService {
             contentVote.article = article
             contentVote.content = content
             contentVote.voter = avatar
-            contentVote.save(flush: true)
+            contentVote.save()
 
             ActivityType activityType = null
 
@@ -181,7 +181,6 @@ class ArticleDataService {
 
     //TODO 2019. 06. 19  게시물 수정
     def update(Article article, Avatar editor, Category category) {
-        println "gggggggggggggggg"
         article.category = category
 
         article.lastEditor = editor
@@ -198,9 +197,9 @@ class ArticleDataService {
 
         article.save()
 
-        /*activityService.removeAllByArticle(article)
+        activityService.removeAllByArticle(article)
 
-        notificationService.removeFromArticle(article)
+        /*notificationService.removeFromArticle(article)
 
         removeNotices(article)
 
@@ -249,6 +248,18 @@ class ArticleDataService {
                     articleNotice.save()
                 }
         }
+    }
+
+    //TODO 2019. 06. 17 스크랩 저장
+    def saveScrap(Article article, Avatar avatar) {
+        activityService.createByArticle(ActivityType.SCRAPED, article, avatar)
+        new Scrap(article: article, avatar: avatar).save(flush: true, failOnError: true)
+    }
+
+    //TODO 2019. 06. 17 스크랩 삭제
+    def deleteScrap(Article article, Avatar avatar) {
+        activityService.removeByArticle(ActivityType.SCRAPED, article, avatar)
+        Scrap.findByArticleAndAvatar(article, avatar).delete(flush: true, failOnError: true)
     }
 
 }

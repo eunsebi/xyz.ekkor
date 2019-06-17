@@ -14,9 +14,9 @@ class BootStrap {
     def init = { servletContext ->
         log.info "Loading database..."
         if ( Environment.current == Environment.DEVELOPMENT ) {
-            /*configureForDevelopment()
+            configureForDevelopment()
             userAddForDevelopment()
-            configureForCategoryDevelopment()*/
+            configureForCategoryDevelopment()
         } else if ( Environment.current == Environment.TEST ) {
             configureForTest()
         } else if ( Environment.current == Environment.PRODUCTION ) {

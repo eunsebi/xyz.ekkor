@@ -49,6 +49,34 @@ class ActivityService {
         activity
     }
 
+    //TODO 2019. 06. 17 스크랩 삭제
+    def removeByArticle(ActivityType activityType, Article article, Avatar avatar) {
+
+        Activity activity = Activity.createCriteria().get {
+            and {
+                eq('type', activityType)
+                eq('article', article)
+                eq('content', article.content)
+                eq('avatar', avatar)
+            }
+        }
+
+        unsetPoint(activity, article.content)
+
+        remove(activity)
+    }
+
+    def unsetPoint(Activity activityInstance, Content contentInstance) {
+        if(activityInstance.pointType == ActivityPointType.TAKE)
+            activityInstance.avatar.updateActivityPoint(-activityInstance.point)
+        else if(activityInstance.pointType == ActivityPointType.GIVE)
+            contentInstance.author.updateActivityPoint(-activityInstance.point)
+    }
+
+    def remove(Activity activity) {
+        activity.delete(flush: true, failOnError: true)
+    }
+
     /**
      *  게시물 삭제 연동
      * @param article
