@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta name="layout" content="main" />
+        <meta name="layout" content="admin" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <g:set var="entityName" value="${message(code: 'category.label', default: 'Category')}" />
         <title><g:message code="default.list.label" args="[entityName]" /></title>
     </head>

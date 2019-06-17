@@ -84,8 +84,8 @@
                     <!-- vote -->
                     <div id="content-function" class="content-function pull-right text-center">
                         <div class="content-function-group">
-                            <!-- 스크립트 오류 주석 -->
-                            <g:voteButtons content="${article.content}" votes="${contentVotes}" category="${article.category}" />
+                            <!-- class 오류 주석 -->
+                            %{--<g:voteButtons content="${article.content}" votes="${contentVotes}" category="${article.category}" />--}%
                         </div>
                         <div class="content-function-group article-scrap-wrapper">
                             <a href="javascript://" id="article-scrap-btn" data-type="${scrapped ? 'unscrap' : 'scrap'}"><i class="fa fa-bookmark ${scrapped ? 'note-scrapped' : ''}" data-toggle="tooltip" data-placement="left" title="${scrapped ? '스크랩 취소' : '스크랩'}"></i></a>
@@ -98,11 +98,11 @@
                         <!-- 공유 -->
                         <div class="dropdown">
                             %{--<a href="http://www.facebook.com/sharer/sharer.php?app_id=${grailsApplication.config.oauth.providers.facebook.key}&sdk=joey&u=${encodedURL(withDomain: true)}&display=popup&ref=plugin" class="btn-facebook-share"><i class="fa fa-facebook-square fa-fw" data-toggle="tooltip" data-placement="left" title="페이스북 공유"></i></a>--}%
-                            <a href="javascript://" data-toggle="dropdown" id="sns-share-btn"><i class="fa fa-share-alt" data-toggle="tooltip" data-placement="left" title="SNS 공유"></i></a>
+                            %{--<a href="javascript://" data-toggle="dropdown" id="sns-share-btn"><i class="fa fa-share-alt" data-toggle="tooltip" data-placement="left" title="SNS 공유"></i></a>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="sns-share-btn">
                                 <li><a href="javascript://"><i class="fa fa-facebook-square fa-fw"></i> Facebook</a></li>
                                 <li><a href="javascript://"><i class="fa fa-google-plus-square fa-fw"></i> Google +</a></li>
-                            </ul>
+                            </ul>--}%
                         </div>
 
                         <g:isAuthorOrAdmin author="${article.author}">

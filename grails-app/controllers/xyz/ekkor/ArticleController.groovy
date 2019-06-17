@@ -20,6 +20,8 @@ class ArticleController {
 
     //static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
+    //static responseFormats = ['html', 'json']
+
     static allowedMethods = [save   : "POST", update: ["PUT", "POST"], delete: ["DELETE", "POST"], scrap: "POST",
                              addNote: "POST", assent: ["PUT", "POST"], dissent: ["PUT", "POST"]]
 
@@ -545,7 +547,7 @@ class ArticleController {
             withFormat {
                 html { redirect article }
                 json {
-                    article.refresh()
+                    //article.refresh()
                     def result = [scrapCount: article.scrapCount]
                     respond result
                 }

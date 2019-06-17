@@ -1,5 +1,7 @@
 package xyz.ekkor
 
+import grails.gorm.transactions.Transactional
+
 class Article {
 
     transient articleDataService

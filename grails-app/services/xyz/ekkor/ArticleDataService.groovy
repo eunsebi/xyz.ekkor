@@ -44,7 +44,6 @@ class ArticleDataService {
 
     //TODO 2019. 05. 22 추천 포인트 추가
     def addVote(Article article, Content content, Avatar avatar, Integer point) {
-        println "서비스 왔다."
 
         if(ContentVote.countByContentAndVoter(content, avatar) < 1) {
             ContentVote contentVote = new ContentVote()
@@ -71,8 +70,7 @@ class ArticleDataService {
 
     //TODO 2019. 05. 24 게시물 저장
     def save(Article article, Avatar author, Category category) {
-        log.info("article save dataService 시작")
-        println "article save dataService 시작"
+        log.info("article save dataService  Start")
         User user = User.findByAvatar(author)
 
         article.category = category

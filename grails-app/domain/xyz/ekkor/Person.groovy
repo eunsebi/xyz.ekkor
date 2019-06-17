@@ -25,4 +25,8 @@ class Person {
         //company nullable: true
         //resume nullable: true
     }
+
+    String toString() {
+        fullName
+    }
 }
