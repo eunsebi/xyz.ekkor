@@ -56,7 +56,6 @@ class Content {
     }
 
     def updateVoteCount(def i) {
-        println "aaaaaaaaaaaaaaaa"
         if(id != null) {
             executeUpdate("update Content set voteCount = voteCount+:i where id = :id",[i:i, id: id])
 
