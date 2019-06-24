@@ -92,9 +92,9 @@ class Content {
 
     def beforeUpdate() {
         if(isDirty("text")) {
-            text = sanitizeService.sanitize(text)
+            //text = sanitizeService.sanitize(text)
 
-            articleDataService.changeLog(ChangeLogType.CONTENT, article, this,  this.getPersistentValue('text'), text)
+            //articleDataService.changeLog(ChangeLogType.CONTENT, article, this,  this.getPersistentValue('text'), text)
         }
 
         if(anonymity) {
