@@ -3,6 +3,7 @@ package xyz.ekkor
 class Content {
 
     transient articleDataService
+    transient sanitizeService
 
     ContentType type = ContentType.ARTICLE
     ContentTextType textType = ContentTextType.MD
@@ -62,6 +63,30 @@ class Content {
             if(type == ContentType.ARTICLE) {
                 article.updateVoteCount(i)
             }
+        }
+    }
+
+    def getDisplayAuthor() {
+        if(anonymity) {
+            return new Avatar(
+                    nickname: aNickName,
+                    picture: '',
+                    pictureType: AvatarPictureType.ANONYMOUSE,
+                    activityPoint: null
+            )
+        } else {
+            return author
+        }
+    }
+
+    def beforeInsert() {
+        if(text) {
+            text = sanitizeService.sanitize(text)
+        }
+
+        if(anonymity) {
+            anonymity = true
+            author = null
         }
     }
 

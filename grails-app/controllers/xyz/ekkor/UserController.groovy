@@ -187,7 +187,7 @@ class UserController {
     //TODO 2019. 06. 09 user 정보수정 페이지
     def edit(Long id) {
         //respond userService.get(id)
-        println "User info Edit Lodding..."
+        //println "User info Edit Lodding..."
         User user = springSecurityService.currentUser
 
         respond(user)
@@ -211,7 +211,8 @@ class UserController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), user.id])
-                redirect user
+                //redirect user
+                redirect action : 'edit'
             }
             '*'{ respond user, [status: OK] }
         }
@@ -232,6 +233,38 @@ class UserController {
             }
             '*'{ render status: NO_CONTENT }
         }
+    }
+
+    //TODO 2019. 06. 24  패스워드 변경  page
+    def passwordChange() {
+        render view: "passwordChange"
+    }
+
+    //TODO 2019. 06. 24 패스워드 변경 함수
+    def updatePasswordChange(String oldPassword,  String password, String passwordConfirm, String key) {
+        User user = springSecurityService.currentUser
+
+        println "passwd : " + password
+        println "passConfirm : " + passwordConfirm
+        println "Key : " + key
+
+        if(password != passwordConfirm) {
+            flash.message = message(code: 'user.password.not.equal.message')
+            render view: 'passwordChange', model: [key: key]
+            return
+        }
+
+        user.password = password
+        //user.save()
+        userService.save(user)
+
+        if(user.hasErrors()) {
+            flash.message = message(code: 'user.password.matches.error', args: [message(code: 'user.password.label')])
+            render view: 'passwordChange', model: [key: key]
+            return
+        }
+
+        redirect controller: 'user', action: 'edit'
     }
 
     protected void notFound() {
