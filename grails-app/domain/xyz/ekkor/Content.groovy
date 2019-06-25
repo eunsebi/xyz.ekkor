@@ -80,9 +80,9 @@ class Content {
     }
 
     def beforeInsert() {
-        if(text) {
+        /*if(text) {
             text = sanitizeService.sanitize(text)
-        }
+        }*/
 
         if(anonymity) {
             anonymity = true
