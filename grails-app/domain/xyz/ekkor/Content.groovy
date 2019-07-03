@@ -66,6 +66,12 @@ class Content {
         }
     }
 
+    def getAttachedFiles() {
+        this.files.findAll {
+            it.attachType == AttachedFileType.ATTACHED
+        }
+    }
+
     def getDisplayAuthor() {
         if(anonymity) {
             return new Avatar(

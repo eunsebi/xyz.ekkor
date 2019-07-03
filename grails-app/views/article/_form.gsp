@@ -124,58 +124,58 @@
 
 <g:hiddenField name="content.textType" value="HTML"/>
 <asset:script type="text/javascript">
-    $(document).ready(function() {
-        $('#summernote').summernote({
-            height: 300,
-            minHeight: null,
-            maxHeight: null,
-            lang : 'ko-KR',
-            callbacks: {
-                onImageUpload : function(files, editor, welEditable) {
-                    console.log('image upload:', files);
-                    sendFile(files[0], editor, welEditable);
+        $(document).ready(function() {
+            $('#summernote').summernote({
+                height: 300,
+                minHeight: null,
+                maxHeight: null,
+                lang : 'ko-KR',
+                callbacks: {
+                    onImageUpload : function(files, editor, welEditable) {
+                        console.log('image upload:', files);
+                        sendFile(files[0], editor, welEditable);
+                    }
                 }
+            });
+
+            // summernote 에 값을 기록(set)
+            // var markupStr = 'hello world';
+            // $('.summernote').summernote('code', markupStr);
+
+            // summernote 에디터에 이미지 업로드
+            function sendFile(file,editor,welEditable) {
+                data = new FormData();
+                data.append("file", file);
+                $.ajax({
+                    url: "/file/uploadImg", // image 저장 경로
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    type: 'POST',
+                    success: function(data){
+                        $('#summernote').summernote('insertImage', data.url); // summernote 에디터에 img 태그를 보여줌
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.log(textStatus+" "+errorThrown);
+                    }
+                });
             }
         });
 
-        // summernote 에 값을 기록(set)
-        // var markupStr = 'hello world';
-        // $('.summernote').summernote('code', markupStr);
+         function postForm() {
+             $('textarea[name="content.text"]').val($('#summernote').code());
+         }
 
-        // summernote 에디터에 이미지 업로드
-        function sendFile(file,editor,welEditable) {
-            data = new FormData();
-            data.append("file", file);
-            $.ajax({
-                url: "/file/uploadImg", // image 저장 경로
-                data: data,
-                cache: false,
-                contentType: false,
-                enctype: 'multipart/form-data',
-                processData: false,
-                type: 'POST',
-                success: function(data){
-                    $('#summernote').summernote('insertImage', data.url); // summernote 에디터에 img 태그를 보여줌
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus+" "+errorThrown);
-                }
-            });
-        }
-    });
-
-     function postForm() {
-         $('textarea[name="content.text"]').val($('#summernote').code());
-     }
-
-     $('#notice').click(function() {
-       if($(this).is(':checked')) {
-         $('#noticeCategoryList').show();
-       } else {
-         $('#noticeCategoryList').hide();
-         $('input[name="notices"]').prop('checked', false);
-       }
-     });
+         $('#notice').click(function() {
+           if($(this).is(':checked')) {
+             $('#noticeCategoryList').show();
+           } else {
+             $('#noticeCategoryList').hide();
+             $('input[name="notices"]').prop('checked', false);
+           }
+         });
 </asset:script>
 %{--<fieldset class="form">
     <f:all bean="article"/>

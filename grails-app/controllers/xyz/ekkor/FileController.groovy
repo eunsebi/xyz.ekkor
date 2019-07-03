@@ -2,8 +2,7 @@ package xyz.ekkor
 
 import com.amazonaws.services.s3.model.ObjectListing
 import com.amazonaws.services.s3.model.S3ObjectSummary
-import grails.converters.JSON
-import org.grails.web.json.JSONObject
+import grails.gorm.transactions.Transactional
 import org.springframework.web.multipart.MultipartFile
 
 class FileController {
@@ -19,7 +18,7 @@ class FileController {
     }
 
     def image() {
-        MultipartFile imageFile = request.getFile("files")
+        def imageFile = request.getFile('file')
         println "file image Upload"
 
         if(!imageFile.empty) {
@@ -47,11 +46,13 @@ class FileController {
         }
     }
 
+    @Transactional
     def uploadImg() {
-        println "File Upload"
-        println "file Name : " + params
+        println "Img Upload "
+        println "file params : " +  params.fileLabel
+        def multipartFile = request.getFile('file')
 
-        MultipartFile multipartFile = request.getFile('file')
+        /*MultipartFile multipartFile = request.getFile('file')
         if(multipartFile && !multipartFile.empty) {
             amazonS3Service.storeMultipartFile('ekkor', 'img/'+multipartFile.originalFilename, multipartFile)
             def file = amazonPath+multipartFile.originalFilename
@@ -66,7 +67,7 @@ class FileController {
         } else {
             flash.message = "Upload failed"
             redirect controller: "file"
-        }
+        }*/
 
     }
 
