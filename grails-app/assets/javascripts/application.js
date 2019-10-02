@@ -6,7 +6,15 @@
 // to create separate JavaScript files as needed.
 //
 
-//= require_self
+//= require jquery
+//= require bootstrap
+//= require libs/bootstrap-tagsinput
+//= require libs/bootstrap-datepicker
+//= require libs/bootstrap-datepicker.kr.min
+//= require libs/summernote
+//= require libs/summernote-ko-KR
+//= require libs/summernote-ext-video
+//= require libs/summernote-ext-codeblock
 //= require libs/spin
 //= require libs/jquery.spin
 //= require libs/placeholder_polyfill.jquery
@@ -16,6 +24,7 @@
 //= require libs/jquery.validate
 //= require libs/messages_ko
 //= require apps/utils
+//= require_self
 
 /*if (typeof jQuery !== 'undefined') {
     (function($) {

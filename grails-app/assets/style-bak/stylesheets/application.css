@@ -12,13 +12,10 @@
 *= require bootstrap-datepicker3
 *= require summernote
 *= require prism
-*= require placeholder_polyfill
+*= require main
+*= require mobile
 *= require_self
 */
-
-/*
- * Base structure
- */
 
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
@@ -65,7 +62,6 @@ pre code {
     color: #ccc !important;
     font-weight: 100 !important;
 }
-
 
 /*
  * Global add-ons
